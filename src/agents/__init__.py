@@ -7,6 +7,7 @@ from .models import (
     PolicyMatcherInput,
     PolicyMatcherOutput,
 )
+from .policy_matcher_agent import run_policy_matcher_agent
 from .prompts import (
     EXTRACTOR_SYSTEM_PROMPT,
     FORM_FILLER_SYSTEM_PROMPT,
@@ -39,5 +40,6 @@ __all__ = [
     "build_policy_matcher_user_prompt",
     "parse_structured_output",
     "run_extractor_agent",
+    "run_policy_matcher_agent",
     "run_structured_agent",
 ]
