@@ -1,4 +1,5 @@
 from .extractor_agent import run_extractor_agent
+from .form_filler_agent import run_form_filler_agent
 from .models import (
     ExtractorInput,
     ExtractorOutput,
@@ -40,6 +41,7 @@ __all__ = [
     "build_policy_matcher_user_prompt",
     "parse_structured_output",
     "run_extractor_agent",
+    "run_form_filler_agent",
     "run_policy_matcher_agent",
     "run_structured_agent",
 ]
