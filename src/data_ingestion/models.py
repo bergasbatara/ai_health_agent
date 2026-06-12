@@ -17,3 +17,16 @@ class DiscoveredPdf(DomainModel):
     @field_serializer("path")
     def serialize_path(self, path: Path) -> str:
         return str(path)
+
+
+class RawPolicyPage(DomainModel):
+    page_number: int = Field(ge=1)
+    text: str = ""
+
+
+class RawPolicyDocument(DomainModel):
+    document_id: str = Field(min_length=1)
+    source_pdf: DiscoveredPdf
+    page_count: int = Field(ge=0)
+    pages: list[RawPolicyPage] = Field(default_factory=list)
+    pdf_metadata: dict[str, str] = Field(default_factory=dict)
