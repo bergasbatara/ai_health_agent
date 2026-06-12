@@ -178,3 +178,18 @@ def test_prior_imaging_and_treatment_models_validate():
 
     assert case.prior_treatments[0].treatment_type == "nsaids"
     assert case.prior_imaging[0].modality == ImagingModality.XRAY
+
+
+def test_policy_document_supports_study_family():
+    from domain import PolicyDocument
+
+    document = PolicyDocument(
+        document_id="aetna-knee-mri-policy",
+        payer_id=PayerId.AETNA,
+        payer_name="Aetna",
+        title="Aetna Knee MRI Policy",
+        source_path="data/Aetna Knee MRI policy.pdf",
+        study_family="knee_mri",
+    )
+
+    assert document.study_family == "knee_mri"

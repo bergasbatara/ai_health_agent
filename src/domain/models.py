@@ -72,6 +72,7 @@ class PolicyDocument(DomainModel):
     payer_name: str = Field(min_length=1)
     title: str = Field(min_length=1)
     source_path: str = Field(min_length=1)
+    study_family: str = Field(min_length=1)
     version: str | None = None
     effective_date: date | None = None
     retrieval_metadata: dict[str, Any] = Field(default_factory=dict)
