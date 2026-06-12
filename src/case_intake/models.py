@@ -55,3 +55,21 @@ class TextCasePayload(DomainModel):
             cleaned[normalized_key] = normalized_value
         self.metadata = cleaned
         return self
+
+
+class NormalizedCasePayload(DomainModel):
+    case_id: str = Field(min_length=1)
+    payer_id: str = Field(min_length=1)
+    payer_name: str = Field(min_length=1)
+    requested_modality: str = Field(min_length=1)
+    requested_body_region: str = Field(min_length=1)
+    requested_laterality: str = Field(min_length=1)
+    ordering_specialty: str = Field(min_length=1)
+    raw_clinical_note: str = Field(min_length=1)
+    diagnosis: str | None = None
+    reason_for_order: str | None = None
+    symptom_duration_weeks: int | None = Field(default=None, ge=0)
+    demographics: dict[str, Any] = Field(default_factory=dict)
+    prior_treatments: list[dict[str, Any]] = Field(default_factory=list)
+    prior_imaging: list[dict[str, Any]] = Field(default_factory=list)
+    structured_intake: dict[str, Any] = Field(default_factory=dict)
