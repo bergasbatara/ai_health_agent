@@ -53,3 +53,15 @@ class IngestionReport(DomainModel):
     document: PolicyDocument
     chunk_count: int = Field(ge=0)
     indexed_chunk_ids: list[str] = Field(default_factory=list)
+
+
+class BatchIngestionReport(DomainModel):
+    reports: list[IngestionReport] = Field(default_factory=list)
+
+    @property
+    def document_count(self) -> int:
+        return len(self.reports)
+
+    @property
+    def total_chunk_count(self) -> int:
+        return sum(report.chunk_count for report in self.reports)

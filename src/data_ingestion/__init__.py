@@ -9,11 +9,13 @@ from .metadata import (
     infer_title,
     infer_version,
 )
-from .models import DiscoveredPdf, EmbeddedChunk, IngestionReport, PolicyChunk, RawPolicyDocument, RawPolicyPage
+from .models import BatchIngestionReport, DiscoveredPdf, EmbeddedChunk, IngestionReport, PolicyChunk, RawPolicyDocument, RawPolicyPage
+from .pipeline import ingest_directory, ingest_document
 from .pdf_loader import build_document_id, load_pdf
 from .vector_store import ChromaVectorStore, InMemoryVectorStore, index_embedded_chunks
 
 __all__ = [
+    "BatchIngestionReport",
     "ChromaVectorStore",
     "DiscoveredPdf",
     "EmbeddedChunk",
@@ -39,6 +41,8 @@ __all__ = [
     "infer_study_family",
     "infer_title",
     "infer_version",
+    "ingest_directory",
+    "ingest_document",
     "index_embedded_chunks",
     "load_pdf",
     "split_into_word_windows",
