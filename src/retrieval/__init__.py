@@ -1,6 +1,7 @@
 from .mappers import build_evidence_id, map_retrieved_chunk_to_policy_evidence, map_retrieved_chunks_to_policy_evidence
 from .models import PolicySearchQuery, RetrievalResult, RetrievedChunk
 from .query_builder import build_policy_search_query, build_query_filters, build_query_text, infer_study_family
+from .service import retrieve_policy_evidence
 from .vector_store import ChromaVectorSearcher, InMemoryVectorSearcher
 
 __all__ = [
@@ -16,4 +17,5 @@ __all__ = [
     "infer_study_family",
     "map_retrieved_chunk_to_policy_evidence",
     "map_retrieved_chunks_to_policy_evidence",
+    "retrieve_policy_evidence",
 ]
