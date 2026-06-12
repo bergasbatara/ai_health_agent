@@ -1,3 +1,4 @@
+from .builders import build_demographics, build_patient_case, build_prior_imaging, build_prior_treatments
 from .loaders import discover_case_files, infer_case_file_format, load_case_file
 from .models import NormalizedCasePayload, RawCaseFile, StructuredCasePayload, TextCasePayload
 from .normalizers import (
@@ -17,6 +18,10 @@ __all__ = [
     "RawCaseFile",
     "StructuredCasePayload",
     "TextCasePayload",
+    "build_demographics",
+    "build_patient_case",
+    "build_prior_imaging",
+    "build_prior_treatments",
     "discover_case_files",
     "infer_case_file_format",
     "load_case_file",
