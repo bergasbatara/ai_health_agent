@@ -1,3 +1,4 @@
+from .chunker import build_chunk_id, chunk_document, infer_section_label, split_into_word_windows
 from .discovery import compute_file_checksum, discover_pdfs, infer_payer_id
 from .metadata import (
     build_policy_document,
@@ -7,22 +8,29 @@ from .metadata import (
     infer_title,
     infer_version,
 )
-from .models import DiscoveredPdf, RawPolicyDocument, RawPolicyPage
+from .models import DiscoveredPdf, EmbeddedChunk, IngestionReport, PolicyChunk, RawPolicyDocument, RawPolicyPage
 from .pdf_loader import build_document_id, load_pdf
 
 __all__ = [
     "DiscoveredPdf",
+    "EmbeddedChunk",
+    "IngestionReport",
+    "PolicyChunk",
     "RawPolicyDocument",
     "RawPolicyPage",
+    "build_chunk_id",
     "build_document_id",
     "build_policy_document",
+    "chunk_document",
     "compute_file_checksum",
     "discover_pdfs",
     "infer_effective_date",
     "infer_payer_id",
     "infer_payer_name",
+    "infer_section_label",
     "infer_study_family",
     "infer_title",
     "infer_version",
     "load_pdf",
+    "split_into_word_windows",
 ]
