@@ -11,11 +11,14 @@ from .metadata import (
 )
 from .models import DiscoveredPdf, EmbeddedChunk, IngestionReport, PolicyChunk, RawPolicyDocument, RawPolicyPage
 from .pdf_loader import build_document_id, load_pdf
+from .vector_store import ChromaVectorStore, InMemoryVectorStore, index_embedded_chunks
 
 __all__ = [
+    "ChromaVectorStore",
     "DiscoveredPdf",
     "EmbeddedChunk",
     "HashEmbedder",
+    "InMemoryVectorStore",
     "IngestionReport",
     "PolicyChunk",
     "RawPolicyDocument",
@@ -36,6 +39,7 @@ __all__ = [
     "infer_study_family",
     "infer_title",
     "infer_version",
+    "index_embedded_chunks",
     "load_pdf",
     "split_into_word_windows",
 ]
