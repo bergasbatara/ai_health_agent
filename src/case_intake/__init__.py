@@ -12,6 +12,7 @@ from .normalizers import (
     normalize_text_case,
 )
 from .parsers import parse_case_file, parse_json_case, parse_text_case
+from .pipeline import ingest_case, ingest_case_directory
 
 __all__ = [
     "NormalizedCasePayload",
@@ -25,6 +26,8 @@ __all__ = [
     "discover_case_files",
     "infer_case_file_format",
     "load_case_file",
+    "ingest_case",
+    "ingest_case_directory",
     "normalize_body_region",
     "normalize_case_payload",
     "normalize_laterality",
