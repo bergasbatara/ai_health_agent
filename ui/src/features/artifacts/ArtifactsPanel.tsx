@@ -11,7 +11,7 @@ import type {
   PolicyMatchResponse,
 } from "../../types/api";
 import { useEffect, useState } from "react";
-import { getErrorMessage } from "../../lib";
+import { getErrorMessage, usePolling } from "../../lib";
 
 import { DraftPanel } from "./DraftPanel";
 import { EvidencePanel } from "./EvidencePanel";
@@ -36,10 +36,35 @@ const initialState: ArtifactState = {
   draft: null,
 };
 
+const ARTIFACT_POLL_INTERVAL_MS = 5000;
+
 export function ArtifactsPanel({ workflowId }: ArtifactsPanelProps) {
   const [artifacts, setArtifacts] = useState<ArtifactState>(initialState);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  async function loadArtifacts(currentWorkflowId: string, showLoading: boolean) {
+    if (showLoading) {
+      setLoading(true);
+    }
+
+    try {
+      const [facts, evidence, policyMatch, draft] = await Promise.all([
+        getExtractedFacts(currentWorkflowId),
+        getPolicyEvidence(currentWorkflowId),
+        getPolicyMatch(currentWorkflowId),
+        getDraftOutput(currentWorkflowId),
+      ]);
+      setArtifacts({ facts, evidence, policyMatch, draft });
+      setError(null);
+    } catch (caught) {
+      setError(getErrorMessage(caught, "Failed to load artifact panels."));
+    } finally {
+      if (showLoading) {
+        setLoading(false);
+      }
+    }
+  }
 
   useEffect(() => {
     if (!workflowId) {
@@ -49,28 +74,20 @@ export function ArtifactsPanel({ workflowId }: ArtifactsPanelProps) {
       return;
     }
 
-    const currentWorkflowId = workflowId;
-
-    async function loadArtifacts() {
-      setLoading(true);
-      setError(null);
-      try {
-        const [facts, evidence, policyMatch, draft] = await Promise.all([
-          getExtractedFacts(currentWorkflowId),
-          getPolicyEvidence(currentWorkflowId),
-          getPolicyMatch(currentWorkflowId),
-          getDraftOutput(currentWorkflowId),
-        ]);
-        setArtifacts({ facts, evidence, policyMatch, draft });
-      } catch (caught) {
-        setError(getErrorMessage(caught, "Failed to load artifact panels."));
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    void loadArtifacts();
+    void loadArtifacts(workflowId, true);
   }, [workflowId]);
+
+  usePolling(
+    () => {
+      if (!workflowId) {
+        return;
+      }
+
+      void loadArtifacts(workflowId, false);
+    },
+    ARTIFACT_POLL_INTERVAL_MS,
+    Boolean(workflowId),
+  );
 
   return (
     <section className="artifact-grid">

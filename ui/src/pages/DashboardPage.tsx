@@ -4,8 +4,10 @@ import { getHealth, listCases } from "../api/client";
 import { PanelCard, StatusBadge } from "../components";
 import { ArtifactsPanel } from "../features/artifacts";
 import { CaseList, CaseStatusCard, CaseSubmitForm } from "../features/cases";
-import { getErrorMessage } from "../lib";
+import { getErrorMessage, usePolling } from "../lib";
 import type { CaseSummaryResponse, HealthResponse } from "../types/api";
+
+const DASHBOARD_POLL_INTERVAL_MS = 10000;
 
 export function DashboardPage() {
   const [health, setHealth] = useState<HealthResponse | null>(null);
@@ -14,21 +16,32 @@ export function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [selectedWorkflowId, setSelectedWorkflowId] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function loadDashboard() {
-      try {
-        const [healthResponse, casesResponse] = await Promise.all([getHealth(), listCases()]);
-        setHealth(healthResponse);
-        setCases(casesResponse);
-      } catch (caught) {
-        setError(getErrorMessage(caught, "Unknown API error"));
-      } finally {
+  async function loadDashboard(showLoading: boolean) {
+    if (showLoading) {
+      setLoading(true);
+    }
+
+    try {
+      const [healthResponse, casesResponse] = await Promise.all([getHealth(), listCases()]);
+      setHealth(healthResponse);
+      setCases(casesResponse);
+      setError(null);
+    } catch (caught) {
+      setError(getErrorMessage(caught, "Unknown API error"));
+    } finally {
+      if (showLoading) {
         setLoading(false);
       }
     }
+  }
 
-    void loadDashboard();
+  useEffect(() => {
+    void loadDashboard(true);
   }, []);
+
+  usePolling(() => {
+    void loadDashboard(false);
+  }, DASHBOARD_POLL_INTERVAL_MS);
 
   const selectedCase = cases.find((item) => item.workflow_id === selectedWorkflowId) ?? null;
 
