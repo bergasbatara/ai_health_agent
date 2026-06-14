@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { getHealth, listCases } from "../api/client";
+import { ArtifactsPanel } from "../features/artifacts";
 import { CaseList, CaseStatusCard, CaseSubmitForm } from "../features/cases";
 import type { CaseSummaryResponse, HealthResponse } from "../types/api";
 
@@ -82,6 +83,16 @@ export function App() {
         </article>
 
         <CaseStatusCard selectedCase={selectedCase} />
+      </section>
+
+      <section className="artifact-section">
+        <div className="section-heading">
+          <h2>Review Artifacts</h2>
+          <p className="meta">
+            The dashboard reads facts, evidence, policy match, and draft output strictly from API responses.
+          </p>
+        </div>
+        <ArtifactsPanel workflowId={selectedWorkflowId} />
       </section>
     </main>
   );
