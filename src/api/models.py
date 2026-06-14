@@ -17,6 +17,7 @@ class HealthResponse(DomainModel):
 class SubmitCaseRequest(DomainModel):
     case_path: str = Field(min_length=1)
     workflow_id: str | None = None
+    data_dir: str = Field(default="data", min_length=1)
     use_mock_crews: bool = False
     model: str | None = None
     top_k: int = Field(default=5, ge=1, le=50)
@@ -26,6 +27,13 @@ class SubmitCaseRequest(DomainModel):
     def case_path_must_not_be_blank(cls, value: str) -> str:
         if not value.strip():
             raise ValueError("case_path must not be blank")
+        return value
+
+    @field_validator("data_dir")
+    @classmethod
+    def data_dir_must_not_be_blank(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("data_dir must not be blank")
         return value
 
 
