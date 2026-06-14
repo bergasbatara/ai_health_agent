@@ -1,3 +1,4 @@
+import { StatusBadge } from "../../components";
 import type { CaseSummaryResponse } from "../../types/api";
 
 interface CaseListProps {
@@ -43,7 +44,7 @@ export function CaseList({
                   <strong>{item.case_id ?? item.workflow_id}</strong>
                   <p>{item.workflow_id}</p>
                 </div>
-                <span className={`badge badge-${item.status.replaceAll("_", "-")}`}>{item.status}</span>
+                <StatusBadge value={item.status} />
               </div>
             </button>
           </li>

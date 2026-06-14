@@ -48,15 +48,17 @@ export function ArtifactsPanel({ workflowId }: ArtifactsPanelProps) {
       return;
     }
 
+    const currentWorkflowId = workflowId;
+
     async function loadArtifacts() {
       setLoading(true);
       setError(null);
       try {
         const [facts, evidence, policyMatch, draft] = await Promise.all([
-          getExtractedFacts(workflowId),
-          getPolicyEvidence(workflowId),
-          getPolicyMatch(workflowId),
-          getDraftOutput(workflowId),
+          getExtractedFacts(currentWorkflowId),
+          getPolicyEvidence(currentWorkflowId),
+          getPolicyMatch(currentWorkflowId),
+          getDraftOutput(currentWorkflowId),
         ]);
         setArtifacts({ facts, evidence, policyMatch, draft });
       } catch (caught) {
