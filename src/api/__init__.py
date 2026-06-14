@@ -1,3 +1,4 @@
+from .app import app, create_app
 from .models import (
     CaseSummaryResponse,
     DraftOutputResponse,
@@ -9,6 +10,7 @@ from .models import (
     SubmitCaseResponse,
     build_case_summary_response,
 )
+from .routes import health_router
 from .store import InMemoryWorkflowStore, WorkflowResultNotFoundError
 
 __all__ = [
@@ -22,5 +24,8 @@ __all__ = [
     "SubmitCaseRequest",
     "SubmitCaseResponse",
     "WorkflowResultNotFoundError",
+    "app",
     "build_case_summary_response",
+    "create_app",
+    "health_router",
 ]
