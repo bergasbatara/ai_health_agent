@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 
-from .routes import cases_router, health_router
+from .routes import artifacts_router, cases_router, health_router
 from .store import InMemoryWorkflowStore
 
 
@@ -11,6 +11,7 @@ def create_app() -> FastAPI:
     app.state.workflow_store = InMemoryWorkflowStore()
     app.include_router(health_router)
     app.include_router(cases_router)
+    app.include_router(artifacts_router)
     return app
 
 
