@@ -1,0 +1,33 @@
+:root {
+  color-scheme: light;
+  font-family: "IBM Plex Sans", "Avenir Next", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  --color-ink-strong: #13202b;
+  --color-ink-muted: #617281;
+  --color-ink-accent: #35506e;
+  --color-accent-warm: #8c4f17;
+
+  --color-surface: rgba(255, 255, 255, 0.8);
+  --color-surface-strong: rgba(255, 255, 255, 0.95);
+  --color-surface-selected: rgba(19, 32, 43, 0.05);
+  --color-border-soft: rgba(19, 32, 43, 0.08);
+  --color-border-input: rgba(19, 32, 43, 0.12);
+
+  --color-success-bg: #d6f5e0;
+  --color-success-fg: #0f6b36;
+  --color-danger-bg: #ffe1df;
+  --color-danger-fg: #9f2f24;
+  --color-warning-bg: #fff2c8;
+  --color-warning-fg: #8b6400;
+  --color-info-bg: #dfe9f5;
+  --color-info-fg: #35506e;
+
+  --shadow-panel: 0 18px 40px rgba(19, 32, 43, 0.08);
+  --radius-panel: 20px;
+  --radius-pill: 999px;
+  --radius-control: 12px;
+  --space-panel: 20px;
+  --space-grid: 18px;
+}

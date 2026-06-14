@@ -1,0 +1,67 @@
+.app-shell {
+  width: min(1100px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 48px 0 72px;
+}
+
+.hero {
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-accent-warm);
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2.4rem, 4vw, 4rem);
+  line-height: 0.95;
+}
+
+.lede {
+  max-width: 720px;
+  margin-top: 14px;
+  color: var(--color-ink-muted);
+}
+
+.panel-grid,
+.artifact-grid,
+.artifact-section {
+  display: grid;
+  gap: var(--space-grid);
+}
+
+.panel-grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin-bottom: 22px;
+}
+
+.artifact-grid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.artifact-panel {
+  min-height: 240px;
+}
+
+.section-heading h2 {
+  margin: 0 0 6px;
+  font-size: 1.3rem;
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    width: min(100vw - 24px, 1100px);
+    padding-top: 28px;
+  }
+
+  .case-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
