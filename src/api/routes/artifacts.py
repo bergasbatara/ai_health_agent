@@ -1,20 +1,17 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends
 
 from api.dependencies import get_workflow_store
 from api.models import DraftOutputResponse, ExtractedFactsResponse, PolicyEvidenceResponse, PolicyMatchResponse
-from api.store import InMemoryWorkflowStore, WorkflowResultNotFoundError
+from api.store import InMemoryWorkflowStore
 
 
 artifacts_router = APIRouter(prefix="/cases/{workflow_id}", tags=["artifacts"])
 
 
 def _get_result_or_404(workflow_id: str, store: InMemoryWorkflowStore):
-    try:
-        return store.get_result(workflow_id)
-    except WorkflowResultNotFoundError as exc:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    return store.get_result(workflow_id)
 
 
 @artifacts_router.get("/facts", response_model=ExtractedFactsResponse)

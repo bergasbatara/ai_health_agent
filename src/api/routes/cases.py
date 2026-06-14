@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 
 from api.dependencies import ApiServices, get_api_services, get_workflow_store
 from api.models import CaseSummaryResponse, SubmitCaseRequest, SubmitCaseResponse, build_case_summary_response
-from api.store import InMemoryWorkflowStore, WorkflowResultNotFoundError
+from api.store import InMemoryWorkflowStore
 
 
 cases_router = APIRouter(prefix="/cases", tags=["cases"])
@@ -34,8 +34,5 @@ def get_case_status(
     workflow_id: str,
     store: InMemoryWorkflowStore = Depends(get_workflow_store),
 ) -> CaseSummaryResponse:
-    try:
-        result = store.get_result(workflow_id)
-    except WorkflowResultNotFoundError as exc:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc)) from exc
+    result = store.get_result(workflow_id)
     return build_case_summary_response(result)
