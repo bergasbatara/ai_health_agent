@@ -4,6 +4,7 @@ import { getHealth, listCases } from "../api/client";
 import { PanelCard, StatusBadge } from "../components";
 import { ArtifactsPanel } from "../features/artifacts";
 import { CaseList, CaseStatusCard, CaseSubmitForm } from "../features/cases";
+import { getErrorMessage } from "../lib";
 import type { CaseSummaryResponse, HealthResponse } from "../types/api";
 
 export function DashboardPage() {
@@ -20,8 +21,7 @@ export function DashboardPage() {
         setHealth(healthResponse);
         setCases(casesResponse);
       } catch (caught) {
-        const message = caught instanceof Error ? caught.message : "Unknown API error";
-        setError(message);
+        setError(getErrorMessage(caught, "Unknown API error"));
       } finally {
         setLoading(false);
       }

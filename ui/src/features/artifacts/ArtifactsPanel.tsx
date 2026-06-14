@@ -11,6 +11,7 @@ import type {
   PolicyMatchResponse,
 } from "../../types/api";
 import { useEffect, useState } from "react";
+import { getErrorMessage } from "../../lib";
 
 import { DraftPanel } from "./DraftPanel";
 import { EvidencePanel } from "./EvidencePanel";
@@ -62,8 +63,7 @@ export function ArtifactsPanel({ workflowId }: ArtifactsPanelProps) {
         ]);
         setArtifacts({ facts, evidence, policyMatch, draft });
       } catch (caught) {
-        const message = caught instanceof Error ? caught.message : "Failed to load artifact panels.";
-        setError(message);
+        setError(getErrorMessage(caught, "Failed to load artifact panels."));
       } finally {
         setLoading(false);
       }

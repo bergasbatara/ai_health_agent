@@ -1,11 +1,9 @@
+import { toStatusTone } from "../lib";
+
 interface StatusBadgeProps {
   value: string | number | null | undefined;
   tone?: string;
   emptyLabel?: string;
-}
-
-function toBadgeTone(value: string): string {
-  return value.trim().toLowerCase().replace(/[\s_]+/g, "-");
 }
 
 export function StatusBadge({ value, tone, emptyLabel = "unknown" }: StatusBadgeProps) {
@@ -17,6 +15,6 @@ export function StatusBadge({ value, tone, emptyLabel = "unknown" }: StatusBadge
     return <span className="badge badge-idle">{value}</span>;
   }
 
-  const badgeTone = tone ?? toBadgeTone(value);
+  const badgeTone = tone ?? toStatusTone(value);
   return <span className={`badge badge-${badgeTone}`}>{value}</span>;
 }
