@@ -1,5 +1,14 @@
-import { DashboardPage } from "../pages";
+import { AppProviders } from "./AppProviders";
+import { AppShell } from "./AppShell";
+import { NotFoundPage } from "./NotFoundPage";
+import { resolveRoute } from "./routes";
 
 export function App() {
-  return <DashboardPage />;
+  const route = resolveRoute(window.location.pathname);
+
+  return (
+    <AppProviders>
+      <AppShell>{route?.element ?? <NotFoundPage />}</AppShell>
+    </AppProviders>
+  );
 }

@@ -23,6 +23,10 @@ body {
   min-height: 100vh;
 }
 
+.app-frame {
+  min-height: 100vh;
+}
+
 .app-shell {
   width: min(1100px, calc(100vw - 32px));
   margin: 0 auto;
