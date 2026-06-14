@@ -29,3 +29,12 @@ class RulesEvaluationResult(DomainModel):
     passed: bool
     checks: list[RuleCheckResult] = Field(default_factory=list)
     issues: list[ValidationIssue] = Field(default_factory=list)
+
+
+class RulesEngineServiceResult(DomainModel):
+    passed: bool
+    case_evaluation: RulesEvaluationResult
+    policy_evaluation: RulesEvaluationResult
+    draft_evaluation: RulesEvaluationResult
+    checks: list[RuleCheckResult] = Field(default_factory=list)
+    issues: list[ValidationIssue] = Field(default_factory=list)

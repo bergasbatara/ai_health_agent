@@ -13,12 +13,14 @@ from .draft_rules import (
     evaluate_draft_rules,
 )
 from .models import IssueSeverity, RuleCheckResult, RulesEvaluationResult, ValidationIssue
+from .models import RulesEngineServiceResult
 from .policy_rules import (
     check_criteria_have_rationale_and_evidence,
     check_policy_result_has_citations,
     check_recommendation_signal_consistency,
     evaluate_policy_rules,
 )
+from .service import evaluate_prior_auth_package
 
 __all__ = [
     "check_conservative_therapy_duration",
@@ -39,9 +41,11 @@ __all__ = [
     "IssueSeverity",
     "RuleCheckResult",
     "RulesEvaluationResult",
+    "RulesEngineServiceResult",
     "ValidationIssue",
     "make_error",
     "make_issue",
     "make_rule_check",
     "make_warning",
+    "evaluate_prior_auth_package",
 ]
