@@ -1,3 +1,4 @@
+from .engine import WorkflowEngine, WorkflowEngineError, WorkflowRunInputs, run_workflow
 from .models import (
     FailureDisposition,
     RetryPolicy,
@@ -39,6 +40,9 @@ from .steps import (
 __all__ = [
     "FailureDisposition",
     "classify_workflow_exception",
+    "WorkflowEngine",
+    "WorkflowEngineError",
+    "WorkflowRunInputs",
     "handle_case_intake",
     "handle_draft_generation",
     "handle_fact_extraction",
@@ -47,6 +51,7 @@ __all__ = [
     "handle_policy_retrieval",
     "handle_rules_validation",
     "resolve_terminal_workflow_status",
+    "run_workflow",
     "should_require_human_review",
     "should_retry_step",
     "RetryPolicy",
