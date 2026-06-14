@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: ai-health-agent
+Version: 0.1.0
+Summary: Core domain models for a healthcare prior authorization assistant.
+Requires-Python: >=3.12
+Requires-Dist: pydantic<3.0,>=2.10
+Requires-Dist: pypdf<6.0,>=5.0
+Requires-Dist: sentence-transformers<4.0,>=3.0
+Requires-Dist: chromadb<1.0,>=0.5

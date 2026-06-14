@@ -1,0 +1,26 @@
+{
+  "case_id": "case-001",
+  "payer": "Aetna",
+  "requested_modality": "MRI",
+  "requested_body_region": "knee",
+  "requested_laterality": "left",
+  "ordering_specialty": "orthopedics",
+  "raw_clinical_note": "Patient has left knee pain for 8 weeks after physical therapy. Prior x-ray was unrevealing.",
+  "reason_for_order": "Persistent left knee pain despite conservative therapy",
+  "symptom_duration_weeks": 8,
+  "prior_treatments": [
+    {
+      "treatment_type": "physical_therapy",
+      "completed": "yes",
+      "duration_weeks": 6
+    }
+  ],
+  "prior_imaging": [
+    {
+      "modality": "xray",
+      "body_region": "knee",
+      "laterality": "left",
+      "result_summary": "No acute fracture or dislocation."
+    }
+  ]
+}
