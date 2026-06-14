@@ -55,6 +55,37 @@ def test_retrieve_policy_evidence_returns_query_hits_and_evidence():
     assert result.evidence[0].document_id == "aetna-knee-mri-policy"
 
 
+def test_retrieve_policy_evidence_filters_match_ingested_chunk_metadata():
+    patient_case = make_patient_case()
+    ingested_style_chunk = EmbeddedChunk(
+        chunk=PolicyChunk(
+            chunk_id="chunk-ingested",
+            document_id="aetna-knee-mri-policy",
+            page_number=1,
+            chunk_index=0,
+            text="Patient must complete conservative therapy before MRI approval.",
+            section_label="Knee Mri Criteria",
+            study_family="knee_mri",
+            retrieval_metadata={
+                "payer_id": "aetna",
+                "payer_name": "Aetna",
+                "title": "Aetna Knee MRI Policy",
+                "source_path": "data/Aetna Knee MRI policy.pdf",
+                "study_family": "knee_mri",
+                "requested_modality": "mri",
+                "requested_body_region": "knee",
+            },
+        ),
+        embedding=[0.1, 0.2, 0.3],
+    )
+    searcher = InMemoryVectorSearcher([ingested_style_chunk])
+
+    result = retrieve_policy_evidence(patient_case, searcher=searcher, top_k=3)
+
+    assert len(result.hits) == 1
+    assert result.hits[0].chunk_id == "chunk-ingested"
+
+
 def test_retrieve_policy_evidence_supports_query_embeddings():
     patient_case = make_patient_case()
     searcher = InMemoryVectorSearcher(

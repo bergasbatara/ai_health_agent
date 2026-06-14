@@ -62,6 +62,8 @@ def test_chunk_document_emits_chunk_records_with_source_metadata():
     assert chunks[0].section_label == "Knee Mri Criteria"
     assert chunks[0].study_family == "knee_mri"
     assert chunks[0].retrieval_metadata["payer_name"] == "Aetna"
+    assert chunks[0].retrieval_metadata["requested_modality"] == "mri"
+    assert chunks[0].retrieval_metadata["requested_body_region"] == "knee"
 
 
 def test_build_chunk_id_is_stable():

@@ -92,6 +92,8 @@ def chunk_document(
                         "title": document.title,
                         "source_path": document.source_path,
                         "study_family": document.study_family,
+                        "requested_modality": str(document.retrieval_metadata.get("requested_modality", "")),
+                        "requested_body_region": str(document.retrieval_metadata.get("requested_body_region", "")),
                     },
                 )
             )

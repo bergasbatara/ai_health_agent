@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from datetime import date
 
-from domain import PolicyDocument, PayerId
+from domain import BodyRegion, ImagingModality, PolicyDocument, PayerId
 
 from .models import RawPolicyDocument
 
@@ -109,7 +109,41 @@ def infer_study_family(raw_document: RawPolicyDocument) -> str:
     return "general_imaging"
 
 
+def infer_requested_modality(raw_document: RawPolicyDocument) -> str:
+    searchable_text = get_searchable_text(raw_document).casefold()
+    if "mri" in searchable_text or "magnetic resonance" in searchable_text:
+        return ImagingModality.MRI
+    if "ct" in searchable_text or "computed tomography" in searchable_text:
+        return ImagingModality.CT
+    if "x-ray" in searchable_text or "xray" in searchable_text or "radiograph" in searchable_text:
+        return ImagingModality.XRAY
+    if "ultrasound" in searchable_text:
+        return ImagingModality.ULTRASOUND
+    return ImagingModality.OTHER
+
+
+def infer_requested_body_region(raw_document: RawPolicyDocument) -> str:
+    searchable_text = get_searchable_text(raw_document).casefold()
+    if "knee" in searchable_text:
+        return BodyRegion.KNEE
+    if "shoulder" in searchable_text:
+        return BodyRegion.SHOULDER
+    if "lumbar" in searchable_text or "low back" in searchable_text:
+        return BodyRegion.LUMBAR_SPINE
+    if "cervical" in searchable_text or "neck" in searchable_text:
+        return BodyRegion.CERVICAL_SPINE
+    if "thoracic" in searchable_text or "mid back" in searchable_text:
+        return BodyRegion.THORACIC_SPINE
+    if "hip" in searchable_text:
+        return BodyRegion.HIP
+    if "head" in searchable_text or "brain" in searchable_text:
+        return BodyRegion.HEAD
+    return BodyRegion.OTHER
+
+
 def build_policy_document(raw_document: RawPolicyDocument) -> PolicyDocument:
+    requested_modality = infer_requested_modality(raw_document)
+    requested_body_region = infer_requested_body_region(raw_document)
     return PolicyDocument(
         document_id=raw_document.document_id,
         payer_id=raw_document.source_pdf.payer_id,
@@ -124,5 +158,7 @@ def build_policy_document(raw_document: RawPolicyDocument) -> PolicyDocument:
             "page_count": raw_document.page_count,
             "checksum_sha256": raw_document.source_pdf.checksum_sha256,
             "pdf_metadata": raw_document.pdf_metadata,
+            "requested_modality": requested_modality,
+            "requested_body_region": requested_body_region,
         },
     )
