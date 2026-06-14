@@ -60,6 +60,24 @@
   color: var(--color-ink-muted);
 }
 
+.refresh-status {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  color: var(--color-ink-muted);
+  font-size: 0.9rem;
+}
+
+.refresh-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--color-success-fg);
+  box-shadow: 0 0 0 6px rgba(15, 107, 54, 0.12);
+}
+
 .error-text {
   margin: 0;
   color: var(--color-danger-fg);

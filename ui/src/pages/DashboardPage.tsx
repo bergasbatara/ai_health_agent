@@ -4,10 +4,15 @@ import { getHealth, listCases } from "../api/client";
 import { PanelCard, StatusBadge } from "../components";
 import { ArtifactsPanel } from "../features/artifacts";
 import { CaseList, CaseStatusCard, CaseSubmitForm } from "../features/cases";
-import { getErrorMessage, usePolling } from "../lib";
-import type { CaseSummaryResponse, HealthResponse } from "../types/api";
+import { formatRelativeTime, getErrorMessage, usePolling } from "../lib";
+import type { CaseSummaryResponse, HealthResponse, WorkflowRunStatus } from "../types/api";
 
-const DASHBOARD_POLL_INTERVAL_MS = 10000;
+const ACTIVE_DASHBOARD_POLL_INTERVAL_MS = 5000;
+const IDLE_DASHBOARD_POLL_INTERVAL_MS = 30000;
+
+function isActiveWorkflow(status: WorkflowRunStatus): boolean {
+  return status === "not_started" || status === "running";
+}
 
 export function DashboardPage() {
   const [health, setHealth] = useState<HealthResponse | null>(null);
@@ -15,6 +20,7 @@ export function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedWorkflowId, setSelectedWorkflowId] = useState<string | null>(null);
+  const [lastUpdatedAt, setLastUpdatedAt] = useState<Date | null>(null);
 
   async function loadDashboard(showLoading: boolean) {
     if (showLoading) {
@@ -26,6 +32,7 @@ export function DashboardPage() {
       setHealth(healthResponse);
       setCases(casesResponse);
       setError(null);
+      setLastUpdatedAt(new Date());
     } catch (caught) {
       setError(getErrorMessage(caught, "Unknown API error"));
     } finally {
@@ -39,11 +46,17 @@ export function DashboardPage() {
     void loadDashboard(true);
   }, []);
 
+  const selectedCase = cases.find((item) => item.workflow_id === selectedWorkflowId) ?? null;
+  const dashboardPollIntervalMs = cases.some((item) => isActiveWorkflow(item.status))
+    ? ACTIVE_DASHBOARD_POLL_INTERVAL_MS
+    : IDLE_DASHBOARD_POLL_INTERVAL_MS;
+  const dashboardRefreshLabel = cases.some((item) => isActiveWorkflow(item.status))
+    ? "Live refresh every 5s"
+    : "Background refresh every 30s";
+
   usePolling(() => {
     void loadDashboard(false);
-  }, DASHBOARD_POLL_INTERVAL_MS);
-
-  const selectedCase = cases.find((item) => item.workflow_id === selectedWorkflowId) ?? null;
+  }, dashboardPollIntervalMs);
 
   function handleCaseSubmitted(workflow: CaseSummaryResponse) {
     setCases((current) => {
@@ -62,6 +75,11 @@ export function DashboardPage() {
           Thin frontend over the review API. This UI only consumes backend responses and does not
           perform policy or clinical reasoning.
         </p>
+        <div className="refresh-status">
+          <span className="refresh-indicator" aria-hidden="true" />
+          <span>{dashboardRefreshLabel}</span>
+          <span>{formatRelativeTime(lastUpdatedAt)}</span>
+        </div>
       </section>
 
       <section className="panel-grid">
@@ -96,7 +114,10 @@ export function DashboardPage() {
             The dashboard reads facts, evidence, policy match, and draft output strictly from API responses.
           </p>
         </div>
-        <ArtifactsPanel workflowId={selectedWorkflowId} />
+        <ArtifactsPanel
+          workflowId={selectedWorkflowId}
+          workflowStatus={selectedCase?.status ?? null}
+        />
       </section>
     </main>
   );
