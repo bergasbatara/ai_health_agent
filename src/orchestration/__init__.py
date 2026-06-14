@@ -10,6 +10,14 @@ from .models import (
     WorkflowState,
     WorkflowStep,
 )
+from .handlers import (
+    handle_case_intake,
+    handle_draft_generation,
+    handle_fact_extraction,
+    handle_policy_matching,
+    handle_policy_retrieval,
+    handle_rules_validation,
+)
 from .steps import (
     STEP_DEFINITION_BY_STEP,
     WORKFLOW_STEP_DEFINITIONS,
@@ -23,6 +31,12 @@ from .steps import (
 
 __all__ = [
     "FailureDisposition",
+    "handle_case_intake",
+    "handle_draft_generation",
+    "handle_fact_extraction",
+    "handle_policy_matching",
+    "handle_policy_retrieval",
+    "handle_rules_validation",
     "RetryPolicy",
     "STEP_DEFINITION_BY_STEP",
     "StepExecutionRecord",
