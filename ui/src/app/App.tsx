@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { getHealth, listCases } from "../api/client";
+import { CaseList, CaseStatusCard, CaseSubmitForm } from "../features/cases";
 import type { CaseSummaryResponse, HealthResponse } from "../types/api";
 
 export function App() {
@@ -8,6 +9,7 @@ export function App() {
   const [cases, setCases] = useState<CaseSummaryResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedWorkflowId, setSelectedWorkflowId] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadDashboard() {
@@ -25,6 +27,16 @@ export function App() {
 
     void loadDashboard();
   }, []);
+
+  const selectedCase = cases.find((item) => item.workflow_id === selectedWorkflowId) ?? null;
+
+  function handleCaseSubmitted(workflow: CaseSummaryResponse) {
+    setCases((current) => {
+      const next = [workflow, ...current.filter((item) => item.workflow_id !== workflow.workflow_id)];
+      return next;
+    });
+    setSelectedWorkflowId(workflow.workflow_id);
+  }
 
   return (
     <main className="app-shell">
@@ -50,31 +62,26 @@ export function App() {
 
         <article className="panel">
           <div className="panel-header">
+            <h2>Submit Case</h2>
+          </div>
+          <CaseSubmitForm onSubmitted={handleCaseSubmitted} />
+        </article>
+
+        <article className="panel">
+          <div className="panel-header">
             <h2>Cases</h2>
             <span className="badge badge-idle">{cases.length}</span>
           </div>
-
-          {loading ? <p className="meta">Loading dashboard data...</p> : null}
-          {error ? <p className="error-text">{error}</p> : null}
-
-          {!loading && !error && cases.length === 0 ? (
-            <p className="meta">No cases submitted yet.</p>
-          ) : null}
-
-          {!loading && !error && cases.length > 0 ? (
-            <ul className="case-list">
-              {cases.map((item) => (
-                <li key={item.workflow_id} className="case-row">
-                  <div>
-                    <strong>{item.case_id ?? item.workflow_id}</strong>
-                    <p>{item.workflow_id}</p>
-                  </div>
-                  <span className={`badge badge-${item.status.replaceAll("_", "-")}`}>{item.status}</span>
-                </li>
-              ))}
-            </ul>
-          ) : null}
+          <CaseList
+            cases={cases}
+            loading={loading}
+            error={error}
+            selectedWorkflowId={selectedWorkflowId}
+            onSelect={setSelectedWorkflowId}
+          />
         </article>
+
+        <CaseStatusCard selectedCase={selectedCase} />
       </section>
     </main>
   );
