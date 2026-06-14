@@ -1,3 +1,11 @@
+from .crewai_adapter import (
+    CrewAIAdapterError,
+    CrewAIOrchestrationAdapter,
+    CrewAIResponseProvider,
+    CrewAIWorkflowProviders,
+    is_crewai_available,
+    run_prior_auth_workflow_with_crewai,
+)
 from .engine import WorkflowEngine, WorkflowEngineError, WorkflowRunInputs, run_workflow
 from .service import OrchestrationService, OrchestrationServiceConfig, run_prior_auth_workflow
 from .models import (
@@ -40,6 +48,10 @@ from .steps import (
 
 __all__ = [
     "FailureDisposition",
+    "CrewAIAdapterError",
+    "CrewAIOrchestrationAdapter",
+    "CrewAIResponseProvider",
+    "CrewAIWorkflowProviders",
     "classify_workflow_exception",
     "WorkflowEngine",
     "WorkflowEngineError",
@@ -53,9 +65,11 @@ __all__ = [
     "handle_policy_matching",
     "handle_policy_retrieval",
     "handle_rules_validation",
+    "is_crewai_available",
     "resolve_terminal_workflow_status",
     "run_workflow",
     "run_prior_auth_workflow",
+    "run_prior_auth_workflow_with_crewai",
     "should_require_human_review",
     "should_retry_step",
     "RetryPolicy",
