@@ -1,3 +1,4 @@
+import { PanelCard, StatusBadge } from "../../components";
 import type { DraftOutputResponse } from "../../types/api";
 
 interface DraftPanelProps {
@@ -11,14 +12,11 @@ export function DraftPanel({ data, loading, error, emptyMessage }: DraftPanelPro
   const draft = data?.prior_auth_draft;
 
   return (
-    <article className="panel artifact-panel">
-      <div className="panel-header">
-        <h2>Draft</h2>
-        <span className={`badge ${draft ? `badge-${draft.review_status.replaceAll("_", "-")}` : "badge-idle"}`}>
-          {draft?.review_status ?? "empty"}
-        </span>
-      </div>
-
+    <PanelCard
+      title="Draft"
+      badge={<StatusBadge value={draft?.review_status ?? "empty"} tone={draft ? undefined : "idle"} />}
+      className="artifact-panel"
+    >
       {loading ? <p className="meta">Loading draft output...</p> : null}
       {!loading && error ? <p className="error-text">{error}</p> : null}
       {!loading && !error && !draft ? <p className="meta">{emptyMessage}</p> : null}
@@ -46,6 +44,6 @@ export function DraftPanel({ data, loading, error, emptyMessage }: DraftPanelPro
           </dl>
         </>
       ) : null}
-    </article>
+    </PanelCard>
   );
 }

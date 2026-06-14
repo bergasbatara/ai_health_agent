@@ -1,3 +1,4 @@
+import { PanelCard, StatusBadge } from "../../components";
 import type { CaseSummaryResponse } from "../../types/api";
 
 interface CaseStatusCardProps {
@@ -7,21 +8,14 @@ interface CaseStatusCardProps {
 export function CaseStatusCard({ selectedCase }: CaseStatusCardProps) {
   if (!selectedCase) {
     return (
-      <article className="panel">
-        <div className="panel-header">
-          <h2>Selected Case</h2>
-        </div>
+      <PanelCard title="Selected Case">
         <p className="meta">Select a case to inspect its current workflow status.</p>
-      </article>
+      </PanelCard>
     );
   }
 
   return (
-    <article className="panel">
-      <div className="panel-header">
-        <h2>Selected Case</h2>
-        <span className={`badge badge-${selectedCase.status.replaceAll("_", "-")}`}>{selectedCase.status}</span>
-      </div>
+    <PanelCard title="Selected Case" badge={<StatusBadge value={selectedCase.status} />}>
       <dl className="detail-list">
         <div>
           <dt>Case ID</dt>
@@ -44,6 +38,6 @@ export function CaseStatusCard({ selectedCase }: CaseStatusCardProps) {
           <dd>{selectedCase.failure_count}</dd>
         </div>
       </dl>
-    </article>
+    </PanelCard>
   );
 }

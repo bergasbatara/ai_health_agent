@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { getHealth, listCases } from "../api/client";
+import { PanelCard, StatusBadge } from "../components";
 import { ArtifactsPanel } from "../features/artifacts";
 import { CaseList, CaseStatusCard, CaseSubmitForm } from "../features/cases";
 import type { CaseSummaryResponse, HealthResponse } from "../types/api";
@@ -51,28 +52,18 @@ export function App() {
       </section>
 
       <section className="panel-grid">
-        <article className="panel">
-          <div className="panel-header">
-            <h2>API Health</h2>
-            <span className={`badge ${health?.status === "ok" ? "badge-ok" : "badge-idle"}`}>
-              {health?.status ?? "unknown"}
-            </span>
-          </div>
+        <PanelCard
+          title="API Health"
+          badge={<StatusBadge value={health?.status} tone={health?.status === "ok" ? "ok" : undefined} />}
+        >
           <p className="meta">{health?.service ?? "No response yet"}</p>
-        </article>
+        </PanelCard>
 
-        <article className="panel">
-          <div className="panel-header">
-            <h2>Submit Case</h2>
-          </div>
+        <PanelCard title="Submit Case">
           <CaseSubmitForm onSubmitted={handleCaseSubmitted} />
-        </article>
+        </PanelCard>
 
-        <article className="panel">
-          <div className="panel-header">
-            <h2>Cases</h2>
-            <span className="badge badge-idle">{cases.length}</span>
-          </div>
+        <PanelCard title="Cases" badge={<StatusBadge value={cases.length} />}>
           <CaseList
             cases={cases}
             loading={loading}
@@ -80,7 +71,7 @@ export function App() {
             selectedWorkflowId={selectedWorkflowId}
             onSelect={setSelectedWorkflowId}
           />
-        </article>
+        </PanelCard>
 
         <CaseStatusCard selectedCase={selectedCase} />
       </section>

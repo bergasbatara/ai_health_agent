@@ -1,3 +1,4 @@
+import { PanelCard, StatusBadge } from "../../components";
 import type { PolicyEvidenceResponse } from "../../types/api";
 
 interface EvidencePanelProps {
@@ -12,12 +13,7 @@ export function EvidencePanel({ data, loading, error, emptyMessage }: EvidencePa
   const queryText = data?.retrieval_result?.query.query_text;
 
   return (
-    <article className="panel artifact-panel">
-      <div className="panel-header">
-        <h2>Evidence</h2>
-        <span className="badge badge-idle">{evidence.length}</span>
-      </div>
-
+    <PanelCard title="Evidence" badge={<StatusBadge value={evidence.length} />} className="artifact-panel">
       {loading ? <p className="meta">Loading policy evidence...</p> : null}
       {!loading && error ? <p className="error-text">{error}</p> : null}
       {!loading && !error && !data?.retrieval_result ? <p className="meta">{emptyMessage}</p> : null}
@@ -38,6 +34,6 @@ export function EvidencePanel({ data, loading, error, emptyMessage }: EvidencePa
           ) : null}
         </>
       ) : null}
-    </article>
+    </PanelCard>
   );
 }

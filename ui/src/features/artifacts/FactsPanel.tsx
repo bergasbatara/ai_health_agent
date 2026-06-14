@@ -1,3 +1,4 @@
+import { PanelCard, StatusBadge } from "../../components";
 import type { ExtractedFactsResponse } from "../../types/api";
 
 interface FactsPanelProps {
@@ -11,12 +12,11 @@ export function FactsPanel({ data, loading, error, emptyMessage }: FactsPanelPro
   const facts = data?.extracted_facts;
 
   return (
-    <article className="panel artifact-panel">
-      <div className="panel-header">
-        <h2>Facts</h2>
-        <span className="badge badge-idle">{facts ? "loaded" : "empty"}</span>
-      </div>
-
+    <PanelCard
+      title="Facts"
+      badge={<StatusBadge value={facts ? "loaded" : "empty"} tone="idle" />}
+      className="artifact-panel"
+    >
       {loading ? <p className="meta">Loading extracted facts...</p> : null}
       {!loading && error ? <p className="error-text">{error}</p> : null}
       {!loading && !error && !facts ? <p className="meta">{emptyMessage}</p> : null}
@@ -53,6 +53,6 @@ export function FactsPanel({ data, loading, error, emptyMessage }: FactsPanelPro
           </div>
         </dl>
       ) : null}
-    </article>
+    </PanelCard>
   );
 }

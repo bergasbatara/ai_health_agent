@@ -1,3 +1,4 @@
+import { PanelCard, StatusBadge } from "../../components";
 import type { PolicyMatchResponse } from "../../types/api";
 
 interface PolicyMatchPanelProps {
@@ -12,12 +13,7 @@ export function PolicyMatchPanel({ data, loading, error, emptyMessage }: PolicyM
   const criteria = match?.criteria ?? [];
 
   return (
-    <article className="panel artifact-panel">
-      <div className="panel-header">
-        <h2>Policy Match</h2>
-        <span className="badge badge-idle">{criteria.length}</span>
-      </div>
-
+    <PanelCard title="Policy Match" badge={<StatusBadge value={criteria.length} />} className="artifact-panel">
       {loading ? <p className="meta">Loading policy match result...</p> : null}
       {!loading && error ? <p className="error-text">{error}</p> : null}
       {!loading && !error && !match ? <p className="meta">{emptyMessage}</p> : null}
@@ -39,6 +35,6 @@ export function PolicyMatchPanel({ data, loading, error, emptyMessage }: PolicyM
           )}
         </>
       ) : null}
-    </article>
+    </PanelCard>
   );
 }
