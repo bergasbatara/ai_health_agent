@@ -10,6 +10,13 @@ from .models import (
     WorkflowState,
     WorkflowStep,
 )
+from .policies import (
+    classify_workflow_exception,
+    make_human_review_failure,
+    resolve_terminal_workflow_status,
+    should_require_human_review,
+    should_retry_step,
+)
 from .handlers import (
     handle_case_intake,
     handle_draft_generation,
@@ -31,12 +38,17 @@ from .steps import (
 
 __all__ = [
     "FailureDisposition",
+    "classify_workflow_exception",
     "handle_case_intake",
     "handle_draft_generation",
     "handle_fact_extraction",
+    "make_human_review_failure",
     "handle_policy_matching",
     "handle_policy_retrieval",
     "handle_rules_validation",
+    "resolve_terminal_workflow_status",
+    "should_require_human_review",
+    "should_retry_step",
     "RetryPolicy",
     "STEP_DEFINITION_BY_STEP",
     "StepExecutionRecord",
