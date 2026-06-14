@@ -1,4 +1,5 @@
 from .engine import WorkflowEngine, WorkflowEngineError, WorkflowRunInputs, run_workflow
+from .service import OrchestrationService, OrchestrationServiceConfig, run_prior_auth_workflow
 from .models import (
     FailureDisposition,
     RetryPolicy,
@@ -43,6 +44,8 @@ __all__ = [
     "WorkflowEngine",
     "WorkflowEngineError",
     "WorkflowRunInputs",
+    "OrchestrationService",
+    "OrchestrationServiceConfig",
     "handle_case_intake",
     "handle_draft_generation",
     "handle_fact_extraction",
@@ -52,6 +55,7 @@ __all__ = [
     "handle_rules_validation",
     "resolve_terminal_workflow_status",
     "run_workflow",
+    "run_prior_auth_workflow",
     "should_require_human_review",
     "should_retry_step",
     "RetryPolicy",
