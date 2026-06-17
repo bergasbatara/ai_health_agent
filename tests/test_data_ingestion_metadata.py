@@ -2,6 +2,7 @@ from datetime import date
 from pathlib import Path
 
 from data_ingestion import build_policy_document, infer_effective_date, infer_study_family, infer_version
+from domain import BodyRegion, ImagingModality
 from data_ingestion.models import DiscoveredPdf, RawPolicyDocument, RawPolicyPage
 from domain import PayerId
 
@@ -79,3 +80,41 @@ def test_metadata_falls_back_to_filename_title_when_pdf_metadata_missing():
 
     assert document.title == "unknown policy document"
     assert document.study_family == "general_imaging"
+
+
+def test_build_policy_document_for_broad_aetna_extremity_policy():
+    raw_document = make_raw_policy_document(
+        filename="Magnetic Resonance Imaging (MRI) of the Extremities - Medical Clinical Policy Bulletins _ Aetna.pdf",
+        payer_id=PayerId.AETNA,
+        page_texts=[
+            "Magnetic Resonance Imaging (MRI) of the Extremities. "
+            "This Clinical Policy Bulletin addresses magnetic resonance imaging of the extremities. "
+            "MRI studies of the knee when criteria are met.",
+        ],
+        pdf_metadata={
+            "Title": "Magnetic Resonance Imaging (MRI) of the Extremities - Medical Clinical Policy Bulletins | Aetna",
+        },
+    )
+
+    document = build_policy_document(raw_document)
+
+    assert document.study_family == "extremity_mri"
+    assert document.retrieval_metadata["requested_modality"] == ImagingModality.MRI
+    assert document.retrieval_metadata["requested_body_region"] == BodyRegion.OTHER
+
+
+def test_build_policy_document_for_broad_cigna_musculoskeletal_policy():
+    raw_document = make_raw_policy_document(
+        filename="Cigna_Musculoskeletal Imaging Guidelines_V2.0.2025_Eff05.15.2025.pdf",
+        payer_id=PayerId.CIGNA,
+        page_texts=["CIGNA MEDICAL COVERAGE POLICIES - RADIOLOGY Musculoskeletal Imaging Guidelines"],
+        pdf_metadata={"Title": "Cigna Musculoskeletal Imaging Guidelines - V2.0.2025 - Effective 5/15/2025"},
+    )
+
+    document = build_policy_document(raw_document)
+
+    assert document.study_family == "musculoskeletal_imaging"
+    assert document.version == "V2.0.2025"
+    assert document.effective_date == date(2025, 5, 15)
+    assert document.retrieval_metadata["requested_modality"] == ImagingModality.OTHER
+    assert document.retrieval_metadata["requested_body_region"] == BodyRegion.OTHER

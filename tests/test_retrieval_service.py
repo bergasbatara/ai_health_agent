@@ -103,3 +103,34 @@ def test_retrieve_policy_evidence_supports_query_embeddings():
 
     assert result.hits[0].chunk_id == "chunk-2"
     assert result.evidence[0].chunk_id == "chunk-2"
+
+
+def test_retrieve_policy_evidence_relaxes_filters_for_broad_policy_documents():
+    patient_case = make_patient_case()
+    broad_policy_chunk = EmbeddedChunk(
+        chunk=PolicyChunk(
+            chunk_id="chunk-broad-policy",
+            document_id="cigna-musculoskeletal-guidelines",
+            page_number=1,
+            chunk_index=0,
+            text="Knee MRI requires conservative therapy before advanced imaging approval.",
+            section_label="Musculoskeletal Imaging Guidelines",
+            study_family="musculoskeletal_imaging",
+            retrieval_metadata={
+                "payer_id": "aetna",
+                "payer_name": "Aetna",
+                "title": "Broad Musculoskeletal Imaging Policy",
+                "source_path": "data/broad-policy.pdf",
+                "study_family": "musculoskeletal_imaging",
+                "requested_modality": "other",
+                "requested_body_region": "other",
+            },
+        ),
+        embedding=[0.1, 0.2, 0.3],
+    )
+    searcher = InMemoryVectorSearcher([broad_policy_chunk])
+
+    result = retrieve_policy_evidence(patient_case, searcher=searcher, top_k=3)
+
+    assert len(result.hits) == 1
+    assert result.hits[0].chunk_id == "chunk-broad-policy"
