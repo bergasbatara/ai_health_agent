@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getHealth, listCases } from "../api/client";
 import { PanelCard, StatusBadge } from "../components";
 import { ArtifactsPanel } from "../features/artifacts";
+import { ChatPanel } from "../features/chat";
 import { CaseList, CaseStatusCard, CaseSubmitForm } from "../features/cases";
 import { formatRelativeTime, getErrorMessage, usePolling } from "../lib";
 import type { CaseSummaryResponse, HealthResponse, WorkflowRunStatus } from "../types/api";
@@ -118,6 +119,16 @@ export function DashboardPage() {
           workflowId={selectedWorkflowId}
           workflowStatus={selectedCase?.status ?? null}
         />
+      </section>
+
+      <section className="artifact-section">
+        <div className="section-heading">
+          <h2>Case Chat</h2>
+          <p className="meta">
+            Grounded case Q&A over workflow artifacts, policy evidence, and draft output.
+          </p>
+        </div>
+        <ChatPanel workflowId={selectedWorkflowId} />
       </section>
     </main>
   );

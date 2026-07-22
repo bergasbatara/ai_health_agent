@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from fastapi import Request
 
+from chat.service import ChatService, ChatServiceError, load_chat_service_config_from_env
 from .errors import WorkflowExecutionError
 from api.models import SubmitCaseRequest
 from .store import InMemoryWorkflowStore
@@ -18,6 +19,7 @@ def get_workflow_store(request: Request) -> InMemoryWorkflowStore:
 @dataclass(slots=True)
 class ApiServices:
     workflow_store: InMemoryWorkflowStore
+    chat_service: ChatService | None = None
 
     def run_workflow(self, request: SubmitCaseRequest) -> WorkflowResult:
         try:
@@ -50,6 +52,26 @@ class ApiServices:
         except Exception as exc:
             raise WorkflowExecutionError(str(exc)) from exc
 
+    def answer_case_question(self, *, workflow_id: str, message: str):
+        result = self.workflow_store.get_result(workflow_id)
+        if self.chat_service is None:
+            raise WorkflowExecutionError(
+                "Chat service is not configured. Set SILICONFLOW_API_KEY and restart the backend."
+            )
+        try:
+            return self.chat_service.answer_case_question(result=result, user_message=message)
+        except ChatServiceError as exc:
+            raise WorkflowExecutionError(str(exc)) from exc
+
 
 def get_api_services(request: Request) -> ApiServices:
     return request.app.state.api_services
+
+
+def build_api_services(*, workflow_store: InMemoryWorkflowStore) -> ApiServices:
+    chat_service = None
+    try:
+        chat_service = ChatService(load_chat_service_config_from_env())
+    except ChatServiceError:
+        chat_service = None
+    return ApiServices(workflow_store=workflow_store, chat_service=chat_service)

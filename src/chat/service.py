@@ -5,6 +5,8 @@ import os
 from dataclasses import dataclass, field
 from typing import Any, Protocol
 
+from orchestration import WorkflowResult
+
 from .models import (
     ChatContentBlock,
     ChatContentType,
@@ -263,6 +265,74 @@ class ChatService:
             model_id=self.config.siliconflow_model,
             base_url=self.config.siliconflow_base_url,
         )
+
+    def build_case_grounded_request(
+        self,
+        *,
+        result: WorkflowResult,
+        user_message: str,
+    ) -> ChatRequest:
+        case_payload = {
+            "workflow_id": result.workflow_id,
+            "status": result.status,
+            "patient_case": (
+                result.artifacts.patient_case.model_dump(mode="json")
+                if result.artifacts.patient_case is not None
+                else None
+            ),
+            "extracted_facts": (
+                result.artifacts.extracted_facts.model_dump(mode="json")
+                if result.artifacts.extracted_facts is not None
+                else None
+            ),
+            "retrieval_result": (
+                result.artifacts.retrieval_result.model_dump(mode="json")
+                if result.artifacts.retrieval_result is not None
+                else None
+            ),
+            "policy_match_result": (
+                result.artifacts.policy_match_result.model_dump(mode="json")
+                if result.artifacts.policy_match_result is not None
+                else None
+            ),
+            "prior_auth_draft": (
+                result.artifacts.prior_auth_draft.model_dump(mode="json")
+                if result.artifacts.prior_auth_draft is not None
+                else None
+            ),
+            "issues": [issue.model_dump(mode="json") for issue in result.issues],
+            "failures": [failure.model_dump(mode="json") for failure in result.failures],
+        }
+        system_prompt = (
+            "You are a prior-authorization review assistant embedded in a healthcare review dashboard. "
+            "Answer only from the provided workflow artifacts. "
+            "If policy evidence is missing, say that explicitly. "
+            "Do not invent insurer requirements, clinical facts, or submission readiness. "
+            "Prefer concise, reviewer-friendly answers."
+        )
+        user_prompt = (
+            "Case workflow artifacts:\n"
+            f"{json.dumps(case_payload, indent=2, ensure_ascii=True)}\n\n"
+            f"Reviewer question:\n{user_message}"
+        )
+        return ChatRequest(
+            model=self.build_default_model(),
+            messages=[
+                ChatMessage(
+                    role=ChatMessageRole.SYSTEM,
+                    content=[ChatContentBlock(type=ChatContentType.TEXT, text=system_prompt)],
+                ),
+                ChatMessage(
+                    role=ChatMessageRole.USER,
+                    content=[ChatContentBlock(type=ChatContentType.TEXT, text=user_prompt)],
+                ),
+            ],
+            metadata={"workflow_id": result.workflow_id, "chat_scope": "case_review"},
+        )
+
+    def answer_case_question(self, *, result: WorkflowResult, user_message: str) -> ChatResponse:
+        request = self.build_case_grounded_request(result=result, user_message=user_message)
+        return self.generate(request)
 
     def generate(self, request: ChatRequest) -> ChatResponse:
         if request.model.provider == ChatProvider.SILICONFLOW:

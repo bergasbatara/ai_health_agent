@@ -2,6 +2,8 @@ from .app import app, create_app
 from .dependencies import ApiServices, get_api_services, get_workflow_store
 from .errors import WorkflowExecutionError, build_error_response, register_error_handlers
 from .models import (
+    CaseChatRequest,
+    CaseChatResponse,
     CaseSummaryResponse,
     DraftOutputResponse,
     ExtractedFactsResponse,
@@ -12,7 +14,7 @@ from .models import (
     SubmitCaseResponse,
     build_case_summary_response,
 )
-from .routes import artifacts_router, cases_router, health_router
+from .routes import artifacts_router, cases_router, chat_router, health_router
 from .store import InMemoryWorkflowStore, WorkflowResultNotFoundError
 
 __all__ = [
@@ -28,11 +30,14 @@ __all__ = [
     "WorkflowResultNotFoundError",
     "WorkflowExecutionError",
     "ApiServices",
+    "CaseChatRequest",
+    "CaseChatResponse",
     "app",
     "artifacts_router",
     "build_case_summary_response",
     "build_error_response",
     "cases_router",
+    "chat_router",
     "create_app",
     "get_api_services",
     "get_workflow_store",

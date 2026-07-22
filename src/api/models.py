@@ -3,6 +3,7 @@ from __future__ import annotations
 from pydantic import Field, field_validator
 
 from domain import ExtractedClinicalFacts, PolicyMatchResult, PriorAuthDraft
+from chat import ChatResponse
 from domain.models import DomainModel
 from orchestration import WorkflowFailure, WorkflowResult, WorkflowRunStatus
 from retrieval import RetrievalResult
@@ -75,6 +76,23 @@ class DraftOutputResponse(DomainModel):
     workflow_id: str = Field(min_length=1)
     status: WorkflowRunStatus
     prior_auth_draft: PriorAuthDraft | None = None
+
+
+class CaseChatRequest(DomainModel):
+    message: str = Field(min_length=1)
+
+    @field_validator("message")
+    @classmethod
+    def message_must_not_be_blank(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("message must not be blank")
+        return value
+
+
+class CaseChatResponse(DomainModel):
+    workflow_id: str = Field(min_length=1)
+    status: WorkflowRunStatus
+    chat_response: ChatResponse
 
 
 def build_case_summary_response(result: WorkflowResult) -> CaseSummaryResponse:

@@ -152,6 +152,62 @@ export interface DraftOutputResponse {
   prior_auth_draft?: PriorAuthDraft | null;
 }
 
+export interface ChatContentBlock {
+  type: string;
+  text?: string | null;
+  image_url?: string | null;
+  metadata?: Record<string, unknown>;
+}
+
+export interface ChatMessage {
+  role: string;
+  content: ChatContentBlock[];
+  name?: string | null;
+  tool_call_id?: string | null;
+  metadata?: Record<string, unknown>;
+}
+
+export interface ChatUsage {
+  input_tokens: number;
+  output_tokens: number;
+  total_tokens: number;
+}
+
+export interface ChatToolCall {
+  call_id: string;
+  tool_name: string;
+  arguments: Record<string, unknown>;
+}
+
+export interface ChatResponsePayload {
+  model: {
+    provider: string;
+    family: string;
+    model_id: string;
+    display_name: string;
+    base_url: string;
+    transport: string;
+    capabilities: Record<string, unknown>;
+    metadata: Record<string, unknown>;
+  };
+  message: ChatMessage;
+  finish_reason: string;
+  usage: ChatUsage;
+  tool_calls: ChatToolCall[];
+  provider_response_id?: string | null;
+  metadata?: Record<string, unknown>;
+}
+
+export interface CaseChatRequest {
+  message: string;
+}
+
+export interface CaseChatResponse {
+  workflow_id: string;
+  status: WorkflowRunStatus;
+  chat_response: ChatResponsePayload;
+}
+
 export interface ErrorEnvelope {
   error?: {
     code?: string;

@@ -1,4 +1,6 @@
 import type {
+  CaseChatRequest,
+  CaseChatResponse,
   CaseSummaryResponse,
   DraftOutputResponse,
   ErrorEnvelope,
@@ -68,4 +70,11 @@ export function getPolicyMatch(workflowId: string): Promise<PolicyMatchResponse>
 
 export function getDraftOutput(workflowId: string): Promise<DraftOutputResponse> {
   return requestJson<DraftOutputResponse>(`/cases/${workflowId}/draft`);
+}
+
+export function chatWithCase(workflowId: string, payload: CaseChatRequest): Promise<CaseChatResponse> {
+  return requestJson<CaseChatResponse>(`/cases/${workflowId}/chat`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
