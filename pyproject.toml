@@ -5,14 +5,24 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ai-health-agent"
 version = "0.1.0"
-description = "Core domain models for a healthcare prior authorization assistant."
+description = "AI-assisted healthcare prior authorization review prototype with API and chat dashboard."
 requires-python = ">=3.12"
 dependencies = [
   "pydantic>=2.10,<3.0",
+  "fastapi>=0.115,<1.0",
+  "uvicorn>=0.32,<1.0",
   "python-dotenv>=1.0,<2.0",
   "pypdf>=5.0,<6.0",
   "sentence-transformers>=3.0,<4.0",
   "chromadb>=0.5,<1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0,<9.0",
+]
+crewai = [
+  "crewai>=1.14,<2.0",
 ]
 
 [tool.pytest.ini_options]
