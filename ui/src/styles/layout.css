@@ -31,7 +31,8 @@
 
 .panel-grid,
 .artifact-grid,
-.artifact-section {
+.artifact-section,
+.chat-section {
   display: grid;
   gap: var(--space-grid);
 }

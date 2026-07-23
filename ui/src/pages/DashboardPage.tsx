@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 
 import { getHealth, listCases } from "../api/client";
 import { PanelCard, StatusBadge } from "../components";
-import { ArtifactsPanel } from "../features/artifacts";
 import { ChatPanel } from "../features/chat";
-import { CaseList, CaseStatusCard, CaseSubmitForm } from "../features/cases";
+import { CaseList, CaseSubmitForm } from "../features/cases";
 import { formatRelativeTime, getErrorMessage, usePolling } from "../lib";
 import type { CaseSummaryResponse, HealthResponse, WorkflowRunStatus } from "../types/api";
 
@@ -73,8 +72,8 @@ export function DashboardPage() {
         <p className="eyebrow">Prior Authorization Review</p>
         <h1>AI Health Agent Dashboard</h1>
         <p className="lede">
-          Thin frontend over the review API. This UI only consumes backend responses and does not
-          perform policy or clinical reasoning.
+          Submit a case, select it, and use a grounded chatbot to inspect policy reasoning,
+          evidence, and draft readiness from backend workflow artifacts.
         </p>
         <div className="refresh-status">
           <span className="refresh-indicator" aria-hidden="true" />
@@ -84,18 +83,14 @@ export function DashboardPage() {
       </section>
 
       <section className="panel-grid">
-        <PanelCard
-          title="API Health"
-          badge={<StatusBadge value={health?.status} tone={health?.status === "ok" ? "ok" : undefined} />}
-        >
-          <p className="meta">{health?.service ?? "No response yet"}</p>
-        </PanelCard>
-
         <PanelCard title="Submit Case">
           <CaseSubmitForm onSubmitted={handleCaseSubmitted} />
         </PanelCard>
 
-        <PanelCard title="Cases" badge={<StatusBadge value={cases.length} />}>
+        <PanelCard
+          title="Pick Case"
+          badge={<StatusBadge value={selectedCase?.status ?? cases.length} tone={selectedCase ? undefined : "idle"} />}
+        >
           <CaseList
             cases={cases}
             loading={loading}
@@ -104,30 +99,40 @@ export function DashboardPage() {
             onSelect={setSelectedWorkflowId}
           />
         </PanelCard>
-
-        <CaseStatusCard selectedCase={selectedCase} />
       </section>
 
-      <section className="artifact-section">
+      <section className="chat-section">
         <div className="section-heading">
-          <h2>Review Artifacts</h2>
+          <h2>Chatbot</h2>
           <p className="meta">
-            The dashboard reads facts, evidence, policy match, and draft output strictly from API responses.
+            {selectedCase
+              ? `Chatting with ${selectedCase.case_id ?? selectedCase.workflow_id}. Answers are grounded in the selected case workflow artifacts.`
+              : "Select a case to start a grounded conversation over its workflow artifacts."}
           </p>
         </div>
-        <ArtifactsPanel
-          workflowId={selectedWorkflowId}
-          workflowStatus={selectedCase?.status ?? null}
-        />
-      </section>
-
-      <section className="artifact-section">
-        <div className="section-heading">
-          <h2>Case Chat</h2>
-          <p className="meta">
-            Grounded case Q&A over workflow artifacts, policy evidence, and draft output.
-          </p>
-        </div>
+        <PanelCard
+          title="Selected Case"
+          badge={<StatusBadge value={selectedCase?.status ?? "idle"} tone={selectedCase ? undefined : "idle"} />}
+        >
+          {selectedCase ? (
+            <dl className="detail-list detail-list-compact">
+              <div>
+                <dt>Case ID</dt>
+                <dd>{selectedCase.case_id ?? "Unknown"}</dd>
+              </div>
+              <div>
+                <dt>Workflow ID</dt>
+                <dd>{selectedCase.workflow_id}</dd>
+              </div>
+              <div>
+                <dt>Current Step</dt>
+                <dd>{selectedCase.current_step ?? "Not available"}</dd>
+              </div>
+            </dl>
+          ) : (
+            <p className="meta">No case selected yet.</p>
+          )}
+        </PanelCard>
         <ChatPanel workflowId={selectedWorkflowId} />
       </section>
     </main>

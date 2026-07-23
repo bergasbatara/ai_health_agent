@@ -252,6 +252,10 @@
   text-align: right;
 }
 
+.detail-list-compact {
+  gap: 10px;
+}
+
 .artifact-query {
   margin-bottom: 14px;
 }
