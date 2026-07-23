@@ -1,0 +1,32 @@
+{
+  "case_id": "case-009",
+  "payer": "Aetna",
+  "requested_modality": "MRI",
+  "requested_body_region": "hip",
+  "requested_laterality": "left",
+  "ordering_specialty": "orthopedics",
+  "raw_clinical_note": "Patient has chronic left hip pain for 20 weeks despite PT and NSAIDs. Prior x-ray showed mild osteoarthritis.",
+  "reason_for_order": "Persistent left hip pain despite conservative management",
+  "diagnosis": "Hip pain",
+  "symptom_duration_weeks": 20,
+  "prior_treatments": [
+    {
+      "treatment_type": "physical_therapy",
+      "completed": "yes",
+      "duration_weeks": 8
+    },
+    {
+      "treatment_type": "nsaid",
+      "completed": "yes",
+      "duration_weeks": 10
+    }
+  ],
+  "prior_imaging": [
+    {
+      "modality": "xray",
+      "body_region": "hip",
+      "laterality": "left",
+      "result_summary": "Mild degenerative changes."
+    }
+  ]
+}

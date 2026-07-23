@@ -1,0 +1,25 @@
+{
+  "case_id": "case-014",
+  "payer": "Cigna",
+  "requested_modality": "MRI",
+  "requested_body_region": "thoracic_spine",
+  "requested_laterality": "midline",
+  "ordering_specialty": "primary care",
+  "raw_clinical_note": "Patient has mid-back pain for 7 weeks after lifting injury. Completed NSAIDs and home exercise program. No prior thoracic imaging documented.",
+  "reason_for_order": "Persistent thoracic back pain despite initial conservative care",
+  "diagnosis": "Thoracic back pain",
+  "symptom_duration_weeks": 7,
+  "prior_treatments": [
+    {
+      "treatment_type": "nsaid",
+      "completed": "yes",
+      "duration_weeks": 4
+    },
+    {
+      "treatment_type": "home_exercise_program",
+      "completed": "yes",
+      "duration_weeks": 5
+    }
+  ],
+  "prior_imaging": []
+}

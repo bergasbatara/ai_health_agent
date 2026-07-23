@@ -1,0 +1,27 @@
+{
+  "case_id": "case-013",
+  "payer": "Aetna",
+  "requested_modality": "MRI",
+  "requested_body_region": "chest",
+  "requested_laterality": "not_applicable",
+  "ordering_specialty": "primary care",
+  "raw_clinical_note": "Patient has chronic chest wall pain for 9 weeks. Prior x-ray was normal. Conservative treatment history is poorly documented.",
+  "reason_for_order": "Persistent chest wall pain",
+  "diagnosis": "Chest wall pain",
+  "symptom_duration_weeks": 9,
+  "prior_treatments": [
+    {
+      "treatment_type": "analgesic",
+      "completed": "unknown",
+      "duration_weeks": 2
+    }
+  ],
+  "prior_imaging": [
+    {
+      "modality": "xray",
+      "body_region": "chest",
+      "laterality": "not_applicable",
+      "result_summary": "No acute cardiopulmonary abnormality."
+    }
+  ]
+}

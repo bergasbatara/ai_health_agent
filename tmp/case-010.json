@@ -1,0 +1,26 @@
+{
+  "case_id": "case-010",
+  "payer": "Aetna",
+  "requested_modality": "MRI",
+  "requested_body_region": "knee",
+  "requested_laterality": "bilateral",
+  "ordering_specialty": "orthopedics",
+  "raw_clinical_note": "Patient has bilateral knee pain for 14 weeks, worse on stairs. Conservative treatment duration is not fully documented.",
+  "reason_for_order": "Bilateral chronic knee pain",
+  "symptom_duration_weeks": 14,
+  "prior_treatments": [
+    {
+      "treatment_type": "home_exercise_program",
+      "completed": "yes",
+      "duration_weeks": 4
+    }
+  ],
+  "prior_imaging": [
+    {
+      "modality": "xray",
+      "body_region": "knee",
+      "laterality": "bilateral",
+      "result_summary": "Mild bilateral degenerative changes."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "case_id": "case-007",
+  "payer": "MedAdv",
+  "requested_modality": "CT",
+  "requested_body_region": "head",
+  "requested_laterality": "not_applicable",
+  "ordering_specialty": "emergency medicine",
+  "raw_clinical_note": "Patient has severe new headache with focal neurologic symptoms and vomiting. No prior imaging available.",
+  "reason_for_order": "Severe headache with focal neurologic symptoms",
+  "diagnosis": "Acute headache",
+  "symptom_duration_weeks": 0,
+  "prior_treatments": [],
+  "prior_imaging": []
+}

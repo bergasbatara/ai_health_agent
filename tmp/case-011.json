@@ -1,0 +1,32 @@
+{
+  "case_id": "case-011",
+  "payer": "Cigna",
+  "requested_modality": "MRI",
+  "requested_body_region": "knee",
+  "requested_laterality": "left",
+  "ordering_specialty": "sports medicine",
+  "raw_clinical_note": "Patient has persistent left knee locking for 6 weeks after nonoperative treatment. Prior x-ray negative.",
+  "reason_for_order": "Left knee locking and suspected meniscal injury",
+  "diagnosis": "Suspected meniscal tear",
+  "symptom_duration_weeks": 6,
+  "prior_treatments": [
+    {
+      "treatment_type": "rest",
+      "completed": "yes",
+      "duration_weeks": 2
+    },
+    {
+      "treatment_type": "physical_therapy",
+      "completed": "yes",
+      "duration_weeks": 4
+    }
+  ],
+  "prior_imaging": [
+    {
+      "modality": "xray",
+      "body_region": "knee",
+      "laterality": "left",
+      "result_summary": "No acute osseous abnormality."
+    }
+  ]
+}

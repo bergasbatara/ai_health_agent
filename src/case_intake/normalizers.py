@@ -27,8 +27,12 @@ MODALITY_ALIASES = {
 BODY_REGION_ALIASES = {
     "knee": BodyRegion.KNEE,
     "lumbar spine": BodyRegion.LUMBAR_SPINE,
+    "lumbar_spine": BodyRegion.LUMBAR_SPINE,
     "lower back": BodyRegion.LUMBAR_SPINE,
+    "thoracic spine": BodyRegion.THORACIC_SPINE,
+    "thoracic_spine": BodyRegion.THORACIC_SPINE,
     "cervical spine": BodyRegion.CERVICAL_SPINE,
+    "cervical_spine": BodyRegion.CERVICAL_SPINE,
     "neck": BodyRegion.CERVICAL_SPINE,
     "shoulder": BodyRegion.SHOULDER,
     "hip": BodyRegion.HIP,
@@ -44,6 +48,8 @@ LATERALITY_ALIASES = {
     "bilateral": Laterality.BILATERAL,
     "both": Laterality.BILATERAL,
     "midline": Laterality.MIDLINE,
+    "not applicable": Laterality.NOT_APPLICABLE,
+    "not_applicable": Laterality.NOT_APPLICABLE,
     "na": Laterality.NOT_APPLICABLE,
     "n/a": Laterality.NOT_APPLICABLE,
 }

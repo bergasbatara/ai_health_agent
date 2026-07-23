@@ -1,0 +1,32 @@
+{
+  "case_id": "case-002",
+  "payer": "Aetna",
+  "requested_modality": "MRI",
+  "requested_body_region": "knee",
+  "requested_laterality": "right",
+  "ordering_specialty": "orthopedics",
+  "raw_clinical_note": "Patient has right knee pain for 10 weeks despite physical therapy and NSAID use. Prior x-ray was unrevealing.",
+  "reason_for_order": "Persistent right knee pain despite conservative therapy",
+  "symptom_duration_weeks": 10,
+  "prior_treatments": [
+    {
+      "treatment_type": "physical_therapy",
+      "completed": "yes",
+      "duration_weeks": 8,
+      "notes": "Completed supervised PT and home exercise program."
+    },
+    {
+      "treatment_type": "nsaid",
+      "completed": "yes",
+      "duration_weeks": 6
+    }
+  ],
+  "prior_imaging": [
+    {
+      "modality": "xray",
+      "body_region": "knee",
+      "laterality": "right",
+      "result_summary": "No acute fracture or dislocation. Mild degenerative change."
+    }
+  ]
+}

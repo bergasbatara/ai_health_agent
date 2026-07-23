@@ -1,0 +1,21 @@
+{
+  "case_id": "case-008",
+  "payer": "MedAdv",
+  "requested_modality": "CT",
+  "requested_body_region": "abdomen",
+  "requested_laterality": "not_applicable",
+  "ordering_specialty": "emergency medicine",
+  "raw_clinical_note": "Patient has right lower quadrant abdominal pain and fever for 2 days. Ultrasound was equivocal.",
+  "reason_for_order": "Evaluate abdominal pain and possible appendicitis",
+  "diagnosis": "Abdominal pain",
+  "symptom_duration_weeks": 0,
+  "prior_treatments": [],
+  "prior_imaging": [
+    {
+      "modality": "ultrasound",
+      "body_region": "abdomen",
+      "laterality": "not_applicable",
+      "result_summary": "Appendix not well visualized. Equivocal study."
+    }
+  ]
+}

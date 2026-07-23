@@ -1,0 +1,20 @@
+{
+  "case_id": "case-003",
+  "payer": "Aetna",
+  "requested_modality": "MRI",
+  "requested_body_region": "knee",
+  "requested_laterality": "left",
+  "ordering_specialty": "sports medicine",
+  "raw_clinical_note": "Patient reports left knee pain for 2 weeks after a twisting soccer injury. X-ray showed no fracture. No physical therapy yet.",
+  "reason_for_order": "Acute left knee pain after twisting injury",
+  "symptom_duration_weeks": 2,
+  "prior_treatments": [],
+  "prior_imaging": [
+    {
+      "modality": "xray",
+      "body_region": "knee",
+      "laterality": "left",
+      "result_summary": "No fracture identified."
+    }
+  ]
+}

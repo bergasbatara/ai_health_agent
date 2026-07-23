@@ -1,0 +1,20 @@
+{
+  "case_id": "case-006",
+  "payer": "Cigna",
+  "requested_modality": "MRI",
+  "requested_body_region": "cervical_spine",
+  "requested_laterality": "midline",
+  "ordering_specialty": "primary care",
+  "raw_clinical_note": "Patient has neck pain for 3 weeks with intermittent arm tingling. Conservative treatment not fully documented.",
+  "reason_for_order": "Cervical pain with intermittent paresthesias",
+  "diagnosis": "Cervicalgia",
+  "symptom_duration_weeks": 3,
+  "prior_treatments": [
+    {
+      "treatment_type": "muscle_relaxant",
+      "completed": "unknown",
+      "duration_weeks": 1
+    }
+  ],
+  "prior_imaging": []
+}

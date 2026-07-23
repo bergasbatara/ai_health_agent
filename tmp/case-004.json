@@ -1,0 +1,31 @@
+{
+  "case_id": "case-004",
+  "payer": "Cigna",
+  "requested_modality": "MRI",
+  "requested_body_region": "shoulder",
+  "requested_laterality": "right",
+  "ordering_specialty": "orthopedics",
+  "raw_clinical_note": "Patient has right shoulder pain for 12 weeks despite six weeks of physical therapy and activity modification.",
+  "reason_for_order": "Persistent right shoulder pain despite conservative care",
+  "symptom_duration_weeks": 12,
+  "prior_treatments": [
+    {
+      "treatment_type": "physical_therapy",
+      "completed": "yes",
+      "duration_weeks": 6
+    },
+    {
+      "treatment_type": "activity_modification",
+      "completed": "yes",
+      "duration_weeks": 8
+    }
+  ],
+  "prior_imaging": [
+    {
+      "modality": "xray",
+      "body_region": "shoulder",
+      "laterality": "right",
+      "result_summary": "No acute osseous abnormality."
+    }
+  ]
+}

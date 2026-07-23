@@ -1,0 +1,32 @@
+{
+  "case_id": "case-005",
+  "payer": "Cigna",
+  "requested_modality": "MRI",
+  "requested_body_region": "lumbar_spine",
+  "requested_laterality": "midline",
+  "ordering_specialty": "physical medicine",
+  "raw_clinical_note": "Patient has low back pain for 16 weeks with radiation to the left leg despite therapy and NSAIDs. Prior lumbar x-ray unrevealing.",
+  "reason_for_order": "Persistent lumbar radicular pain despite conservative therapy",
+  "diagnosis": "Lumbar radiculopathy",
+  "symptom_duration_weeks": 16,
+  "prior_treatments": [
+    {
+      "treatment_type": "physical_therapy",
+      "completed": "yes",
+      "duration_weeks": 8
+    },
+    {
+      "treatment_type": "nsaid",
+      "completed": "yes",
+      "duration_weeks": 8
+    }
+  ],
+  "prior_imaging": [
+    {
+      "modality": "xray",
+      "body_region": "lumbar_spine",
+      "laterality": "midline",
+      "result_summary": "Mild degenerative change. No acute abnormality."
+    }
+  ]
+}

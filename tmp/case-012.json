@@ -1,0 +1,20 @@
+{
+  "case_id": "case-012",
+  "payer": "MedAdv",
+  "requested_modality": "Ultrasound",
+  "requested_body_region": "pelvis",
+  "requested_laterality": "not_applicable",
+  "ordering_specialty": "primary care",
+  "raw_clinical_note": "Patient has pelvic pain for 5 weeks. No prior imaging documented. Trial of NSAIDs gave limited relief.",
+  "reason_for_order": "Persistent pelvic pain",
+  "diagnosis": "Pelvic pain",
+  "symptom_duration_weeks": 5,
+  "prior_treatments": [
+    {
+      "treatment_type": "nsaid",
+      "completed": "yes",
+      "duration_weeks": 3
+    }
+  ],
+  "prior_imaging": []
+}
