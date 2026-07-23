@@ -105,7 +105,7 @@ export function ChatPanel({ workflowId }: ChatPanelProps) {
     await submitMessage(trimmed);
   }
 
-  const latestResponse = history.at(-1)?.response ?? null;
+  const latestResponse = history.length > 0 ? history[history.length - 1]?.response ?? null : null;
 
   return (
     <PanelCard

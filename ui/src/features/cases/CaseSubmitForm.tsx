@@ -15,10 +15,20 @@ const initialPayload: SubmitCaseRequest = {
   model: "",
 };
 
+const CASE_OPTIONS = Array.from({ length: 15 }, (_, index) => {
+  const caseNumber = String(index + 1).padStart(3, "0");
+  return `tmp/case-${caseNumber}.json`;
+});
+
+const CUSTOM_CASE_OPTION = "__custom__";
+
 export function CaseSubmitForm({ onSubmitted }: CaseSubmitFormProps) {
   const [payload, setPayload] = useState<SubmitCaseRequest>(initialPayload);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCasePath, setSelectedCasePath] = useState<string>(
+    CASE_OPTIONS.includes(initialPayload.case_path) ? initialPayload.case_path : CUSTOM_CASE_OPTION,
+  );
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,13 +51,24 @@ export function CaseSubmitForm({ onSubmitted }: CaseSubmitFormProps) {
     <form className="case-submit-form" onSubmit={handleSubmit}>
       <div className="field-grid">
         <label className="field">
-          <span>Case Path</span>
-          <input
-            value={payload.case_path}
-            onChange={(event) => setPayload((current) => ({ ...current, case_path: event.target.value }))}
-            placeholder="tmp/case-001.json"
-            required
-          />
+          <span>Case Selection</span>
+          <select
+            value={selectedCasePath}
+            onChange={(event) => {
+              const nextValue = event.target.value;
+              setSelectedCasePath(nextValue);
+              if (nextValue !== CUSTOM_CASE_OPTION) {
+                setPayload((current) => ({ ...current, case_path: nextValue }));
+              }
+            }}
+          >
+            {CASE_OPTIONS.map((casePath) => (
+              <option key={casePath} value={casePath}>
+                {casePath.replace("tmp/", "")}
+              </option>
+            ))}
+            <option value={CUSTOM_CASE_OPTION}>Custom path...</option>
+          </select>
         </label>
 
         <label className="field">
@@ -86,6 +107,18 @@ export function CaseSubmitForm({ onSubmitted }: CaseSubmitFormProps) {
           />
         </label>
       </div>
+
+      {selectedCasePath === CUSTOM_CASE_OPTION ? (
+        <label className="field">
+          <span>Custom Case Path</span>
+          <input
+            value={payload.case_path}
+            onChange={(event) => setPayload((current) => ({ ...current, case_path: event.target.value }))}
+            placeholder="tmp/case-001.json"
+            required
+          />
+        </label>
+      ) : null}
 
       <label className="toggle-row">
         <input
