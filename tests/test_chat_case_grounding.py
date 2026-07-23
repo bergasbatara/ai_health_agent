@@ -20,3 +20,5 @@ def test_build_case_grounded_request_includes_workflow_artifacts():
     assert request.messages[0].role == "system"
     assert "Reviewer question" in request.messages[1].content[0].text
     assert '"workflow_id": "workflow-123"' in request.messages[1].content[0].text
+    assert '"top_evidence"' in request.messages[1].content[0].text
+    assert '"policy_match_summary"' in request.messages[1].content[0].text

@@ -20,6 +20,7 @@ def test_build_siliconflow_kimi_k2_6_model_returns_flexible_model_ref():
     assert model.provider == "siliconflow"
     assert model.family == "kimi_k2_6"
     assert model.model_id == "moonshotai/Kimi-K2.6"
+    assert model.display_name == "Kimi-K2.6 via SiliconFlow"
     assert model.capabilities.supports_image_input is True
     assert model.capabilities.supports_tool_use is True
     assert model.capabilities.context_window_tokens == 256_000

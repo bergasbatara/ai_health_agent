@@ -246,7 +246,7 @@ class ChatServiceConfig:
     siliconflow_api_key: str
     siliconflow_base_url: str = "https://api.siliconflow.com/v1"
     siliconflow_model: str = "moonshotai/Kimi-K2.6"
-    timeout_seconds: float = 60.0
+    timeout_seconds: float = 120.0
 
 
 @dataclass(slots=True)
@@ -272,46 +272,21 @@ class ChatService:
         result: WorkflowResult,
         user_message: str,
     ) -> ChatRequest:
-        case_payload = {
-            "workflow_id": result.workflow_id,
-            "status": result.status,
-            "patient_case": (
-                result.artifacts.patient_case.model_dump(mode="json")
-                if result.artifacts.patient_case is not None
-                else None
-            ),
-            "extracted_facts": (
-                result.artifacts.extracted_facts.model_dump(mode="json")
-                if result.artifacts.extracted_facts is not None
-                else None
-            ),
-            "retrieval_result": (
-                result.artifacts.retrieval_result.model_dump(mode="json")
-                if result.artifacts.retrieval_result is not None
-                else None
-            ),
-            "policy_match_result": (
-                result.artifacts.policy_match_result.model_dump(mode="json")
-                if result.artifacts.policy_match_result is not None
-                else None
-            ),
-            "prior_auth_draft": (
-                result.artifacts.prior_auth_draft.model_dump(mode="json")
-                if result.artifacts.prior_auth_draft is not None
-                else None
-            ),
-            "issues": [issue.model_dump(mode="json") for issue in result.issues],
-            "failures": [failure.model_dump(mode="json") for failure in result.failures],
-        }
+        case_payload = self._build_compact_case_payload(result)
         system_prompt = (
             "You are a prior-authorization review assistant embedded in a healthcare review dashboard. "
             "Answer only from the provided workflow artifacts. "
             "If policy evidence is missing, say that explicitly. "
             "Do not invent insurer requirements, clinical facts, or submission readiness. "
-            "Prefer concise, reviewer-friendly answers."
+            "Use this response structure exactly:\n"
+            "Bottom line:\n"
+            "Evidence:\n"
+            "Missing / ambiguous:\n"
+            "Draft readiness:\n"
+            "Keep the answer concise and reviewer-friendly."
         )
         user_prompt = (
-            "Case workflow artifacts:\n"
+            "Compact case workflow summary:\n"
             f"{json.dumps(case_payload, indent=2, ensure_ascii=True)}\n\n"
             f"Reviewer question:\n{user_message}"
         )
@@ -333,6 +308,101 @@ class ChatService:
     def answer_case_question(self, *, result: WorkflowResult, user_message: str) -> ChatResponse:
         request = self.build_case_grounded_request(result=result, user_message=user_message)
         return self.generate(request)
+
+    def _build_compact_case_payload(self, result: WorkflowResult) -> dict[str, Any]:
+        patient_case = result.artifacts.patient_case
+        extracted_facts = result.artifacts.extracted_facts
+        retrieval_result = result.artifacts.retrieval_result
+        policy_match_result = result.artifacts.policy_match_result
+        prior_auth_draft = result.artifacts.prior_auth_draft
+
+        evidence_items: list[dict[str, Any]] = []
+        if retrieval_result is not None:
+            for item in retrieval_result.evidence[:3]:
+                evidence_items.append(
+                    {
+                        "document_id": item.document_id,
+                        "section_label": item.section_label,
+                        "page_number": item.page_number,
+                        "relevance_score": item.relevance_score,
+                        "citation_text": item.citation_text[:500],
+                    }
+                )
+
+        criteria_items: list[dict[str, Any]] = []
+        if policy_match_result is not None:
+            for criterion in policy_match_result.criteria[:5]:
+                criteria_items.append(
+                    {
+                        "criterion_key": criterion.criterion_key,
+                        "display_name": criterion.display_name,
+                        "status": criterion.status,
+                        "rationale": criterion.rationale,
+                    }
+                )
+
+        return {
+            "workflow_id": result.workflow_id,
+            "status": result.status,
+            "patient_case": (
+                {
+                    "case_id": patient_case.case_id,
+                    "payer_name": patient_case.payer_name,
+                    "requested_modality": patient_case.requested_modality,
+                    "requested_body_region": patient_case.requested_body_region,
+                    "requested_laterality": patient_case.requested_laterality,
+                    "ordering_specialty": patient_case.ordering_specialty,
+                    "diagnosis": patient_case.diagnosis,
+                    "reason_for_order": patient_case.reason_for_order,
+                    "symptom_duration_weeks": patient_case.symptom_duration_weeks,
+                }
+                if patient_case is not None
+                else None
+            ),
+            "extracted_facts": (
+                {
+                    "requested_modality": extracted_facts.requested_modality,
+                    "requested_body_region": extracted_facts.requested_body_region,
+                    "requested_laterality": extracted_facts.requested_laterality,
+                    "symptom_duration_weeks": extracted_facts.symptom_duration_weeks,
+                    "conservative_therapy_completed": extracted_facts.conservative_therapy_completed,
+                    "prior_imaging_completed": extracted_facts.prior_imaging_completed,
+                    "diagnosis": extracted_facts.diagnosis,
+                    "reason_for_order": extracted_facts.reason_for_order,
+                    "missing_facts": extracted_facts.missing_facts,
+                }
+                if extracted_facts is not None
+                else None
+            ),
+            "retrieval_summary": {
+                "query_text": retrieval_result.query.query_text if retrieval_result is not None else None,
+                "evidence_count": len(retrieval_result.evidence) if retrieval_result is not None else 0,
+                "top_evidence": evidence_items,
+            },
+            "policy_match_summary": (
+                {
+                    "recommendation_signal": policy_match_result.recommendation_signal,
+                    "policy_requirements_summary": policy_match_result.policy_requirements_summary,
+                    "criteria": criteria_items,
+                    "unresolved_questions": policy_match_result.unresolved_questions,
+                }
+                if policy_match_result is not None
+                else None
+            ),
+            "draft_summary": (
+                {
+                    "review_status": prior_auth_draft.review_status,
+                    "reviewer_summary": prior_auth_draft.reviewer_summary,
+                    "missing_requirements": prior_auth_draft.missing_requirements,
+                    "unresolved_issues": prior_auth_draft.unresolved_issues,
+                    "risk_flags": prior_auth_draft.risk_flags,
+                }
+                if prior_auth_draft is not None
+                else None
+            ),
+            "issues": [issue.model_dump(mode="json") for issue in result.issues],
+            "failures": [failure.model_dump(mode="json") for failure in result.failures],
+        }
 
     def generate(self, request: ChatRequest) -> ChatResponse:
         if request.model.provider == ChatProvider.SILICONFLOW:

@@ -180,11 +180,13 @@ def build_siliconflow_kimi_k2_6_model(
     model_id: str = "moonshotai/Kimi-K2.6",
     base_url: str = "https://api.siliconflow.com/v1",
 ) -> ChatModelRef:
+    vendor, _, model_name = model_id.partition("/")
+    display_name = f"{model_name or model_id} via SiliconFlow"
     return ChatModelRef(
         provider=ChatProvider.SILICONFLOW,
         family=ChatModelFamily.KIMI_K2_6,
         model_id=model_id,
-        display_name="Kimi K2.6 via SiliconFlow",
+        display_name=display_name,
         base_url=base_url,
         capabilities=ChatModelCapabilities(
             supports_text_input=True,
@@ -195,7 +197,7 @@ def build_siliconflow_kimi_k2_6_model(
             context_window_tokens=256_000,
         ),
         metadata={
-            "vendor": "moonshotai",
+            "vendor": vendor or "unknown",
             "recommended_for": [
                 "case_review_chat",
                 "artifact_grounded_qa",

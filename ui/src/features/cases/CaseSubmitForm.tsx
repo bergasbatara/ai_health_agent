@@ -77,11 +77,11 @@ export function CaseSubmitForm({ onSubmitted }: CaseSubmitFormProps) {
         </label>
 
         <label className="field">
-          <span>Model</span>
+          <span>Workflow Agent Model</span>
           <input
             value={payload.model ?? ""}
             onChange={(event) => setPayload((current) => ({ ...current, model: event.target.value }))}
-            placeholder="gpt-4o-mini"
+            placeholder="Optional non-mock workflow model"
             disabled={payload.use_mock_crews}
           />
         </label>
@@ -100,6 +100,9 @@ export function CaseSubmitForm({ onSubmitted }: CaseSubmitFormProps) {
         />
         <span>Use mock crews for local demo mode</span>
       </label>
+      <p className="meta">
+        Chatbot model is configured separately on the backend via SiliconFlow environment variables.
+      </p>
 
       <div className="form-actions">
         <button className="primary-button" type="submit" disabled={isSubmitting}>

@@ -30,7 +30,7 @@ export function CaseList({
 
   return (
     <ul className="case-list">
-      {cases.map((item) => {
+      {[...cases].reverse().map((item) => {
         const isSelected = item.workflow_id === selectedWorkflowId;
         return (
           <li key={item.workflow_id}>
