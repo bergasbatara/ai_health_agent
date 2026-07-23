@@ -1,12 +1,23 @@
 import { useState } from "react";
 
-import { chatWithCase } from "../../api/client";
+import { chatWithCase, getPolicyEvidence } from "../../api/client";
 import { PanelCard, StatusBadge } from "../../components";
 import { getErrorMessage } from "../../lib";
-import type { CaseChatResponse } from "../../types/api";
+import type { CaseChatResponse, PolicyEvidence, PolicyEvidenceResponse } from "../../types/api";
 
 interface ChatPanelProps {
   workflowId: string | null;
+}
+
+interface ChatHistoryEntry {
+  question: string;
+  response: CaseChatResponse;
+  sources: PolicyEvidence[];
+}
+
+interface StructuredAnswerSection {
+  title: string;
+  body: string;
 }
 
 const STARTER_PROMPTS = [
@@ -16,9 +27,43 @@ const STARTER_PROMPTS = [
   "What is missing or still ambiguous in this case?",
 ];
 
+function parseStructuredSections(text: string): StructuredAnswerSection[] {
+  const lines = text.split("\n").map((line) => line.trim()).filter(Boolean);
+  const sections: StructuredAnswerSection[] = [];
+  let currentTitle = "Response";
+  let currentBody: string[] = [];
+
+  function flushSection() {
+    if (currentBody.length === 0) {
+      return;
+    }
+    sections.push({
+      title: currentTitle,
+      body: currentBody.join(" "),
+    });
+    currentBody = [];
+  }
+
+  for (const line of lines) {
+    const match = /^(Bottom line|Evidence|Missing \/ ambiguous|Draft readiness):\s*(.*)$/i.exec(line);
+    if (match) {
+      flushSection();
+      currentTitle = match[1];
+      if (match[2]) {
+        currentBody.push(match[2]);
+      }
+      continue;
+    }
+    currentBody.push(line);
+  }
+
+  flushSection();
+  return sections;
+}
+
 export function ChatPanel({ workflowId }: ChatPanelProps) {
   const [message, setMessage] = useState("");
-  const [response, setResponse] = useState<CaseChatResponse | null>(null);
+  const [history, setHistory] = useState<ChatHistoryEntry[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -30,8 +75,19 @@ export function ChatPanel({ workflowId }: ChatPanelProps) {
     setIsSubmitting(true);
     setError(null);
     try {
-      const chatResponse = await chatWithCase(workflowId, { message: nextMessage });
-      setResponse(chatResponse);
+      const [chatResponse, evidenceResponse] = await Promise.all([
+        chatWithCase(workflowId, { message: nextMessage }),
+        getPolicyEvidence(workflowId).catch(() => null as PolicyEvidenceResponse | null),
+      ]);
+      const sources = evidenceResponse?.retrieval_result?.evidence?.slice(0, 3) ?? [];
+      setHistory((current) => [
+        ...current,
+        {
+          question: nextMessage,
+          response: chatResponse,
+          sources,
+        },
+      ]);
     } catch (caught) {
       setError(getErrorMessage(caught, "Failed to get chat response."));
     } finally {
@@ -49,15 +105,12 @@ export function ChatPanel({ workflowId }: ChatPanelProps) {
     await submitMessage(trimmed);
   }
 
-  const assistantText = response?.chat_response.message.content
-    .map((block) => block.text)
-    .filter((value): value is string => Boolean(value))
-    .join("\n\n");
+  const latestResponse = history.at(-1)?.response ?? null;
 
   return (
     <PanelCard
       title="Case Chat"
-      badge={<StatusBadge value={workflowId ? response?.status ?? "ready" : "idle"} tone={workflowId ? undefined : "idle"} />}
+      badge={<StatusBadge value={workflowId ? latestResponse?.status ?? "ready" : "idle"} tone={workflowId ? undefined : "idle"} />}
       className="chat-panel"
     >
       {!workflowId ? (
@@ -107,15 +160,64 @@ export function ChatPanel({ workflowId }: ChatPanelProps) {
 
           <div className="chat-response">
             <div className="panel-header">
-              <h2>Assistant Answer</h2>
-              <StatusBadge value={response?.chat_response.model.display_name ?? "waiting"} tone={response ? "ok" : "idle"} />
+              <h2>Conversation</h2>
+              <StatusBadge
+                value={latestResponse?.chat_response.model.display_name ?? "waiting"}
+                tone={latestResponse ? "ok" : "idle"}
+              />
             </div>
-            {assistantText ? <p className="chat-response-text">{assistantText}</p> : <p className="meta">No chat response yet.</p>}
-            {response ? (
-              <p className="meta">
-                Tokens: {response.chat_response.usage.total_tokens} total
-              </p>
-            ) : null}
+            {history.length === 0 ? (
+              <p className="meta">No chat response yet.</p>
+            ) : (
+              <div className="chat-history">
+                {history.map((entry, index) => {
+                  const assistantText = entry.response.chat_response.message.content
+                    .map((block) => block.text)
+                    .filter((value): value is string => Boolean(value))
+                    .join("\n\n");
+                  const sections = parseStructuredSections(assistantText);
+                  return (
+                    <article key={`${entry.response.workflow_id}-${index}`} className="chat-turn">
+                      <div className="chat-bubble chat-bubble-user">
+                        <p className="chat-turn-label">Reviewer</p>
+                        <p className="chat-response-text">{entry.question}</p>
+                      </div>
+                      <div className="chat-bubble chat-bubble-assistant">
+                        <div className="chat-turn-header">
+                          <p className="chat-turn-label">Assistant</p>
+                          <StatusBadge value={entry.response.status} />
+                        </div>
+                        <div className="chat-sections">
+                          {sections.map((section) => (
+                            <section key={`${entry.response.workflow_id}-${index}-${section.title}`} className="chat-section-block">
+                              <h3>{section.title}</h3>
+                              <p className="chat-response-text">{section.body}</p>
+                            </section>
+                          ))}
+                        </div>
+                        {entry.sources.length > 0 ? (
+                          <div className="chat-sources">
+                            <p className="chat-turn-label">Sources used</p>
+                            <ul className="artifact-list">
+                              {entry.sources.map((source) => (
+                                <li key={source.evidence_id} className="artifact-list-item">
+                                  <strong>{source.document_id}</strong>
+                                  <p>
+                                    {source.section_label ? `${source.section_label} · ` : ""}
+                                    {source.page_number ? `Page ${source.page_number}` : "Page unavailable"}
+                                  </p>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : null}
+                        <p className="meta">Tokens: {entry.response.chat_response.usage.total_tokens} total</p>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </>
       )}
